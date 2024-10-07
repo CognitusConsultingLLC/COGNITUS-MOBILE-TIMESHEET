@@ -43,6 +43,8 @@ sap.ui.define([
 			this.oDataModel = this.getOwnerComponent().getModel();
 			this.onGetLocations();
 			this.onGetTimeCategories();
+			this.isCountrySelected = false;
+			this.isTimeCategorySelect = false;
 			this.getOwnerComponent().getRouter().getRoute("detail").attachPatternMatched(this.onRouteMatched, this);
 
 		},
@@ -133,7 +135,12 @@ sap.ui.define([
 
 			if (isValid) {
 				var sPosId = oRows[this.iIndex].posid;
-				var sPTC = oRows[this.iIndex].timecat;
+				var sPTC;
+				if (this.isTimeCategorySelect) {
+					sPTC = selTC;
+				} else {
+					sPTC = oRows[this.iIndex].timecat;
+				}
 				var sWL = oRows[this.iIndex].wrkloc;
 				var currIndex = this.iIndex;
 				for (var k = 0; k < oRows[this.iIndex].rowsdata.length; k++) {
@@ -150,6 +157,7 @@ sap.ui.define([
 							this.oControl.setProperty("/overviewDataChanged", true);
 							this.oControl.setProperty("/sendForApproval", true);
 							this.getModel("TimeData").refresh();
+							this.isCountrySelected = true;
 						}
 						/*else {
 							record.TimeEntryOperation = 'C';
@@ -182,7 +190,12 @@ sap.ui.define([
 			if (isValid) {
 				var sPosId = oRows[this.iIndex].posid;
 				var sPTC = oRows[this.iIndex].timecat;
-				var sWL = oRows[this.iIndex].wrkloc;
+				var sWL;
+				if (this.isCountrySelected) {
+					sWL = selCountry;
+				} else {
+					sWL = oRows[this.iIndex].wrkloc;
+				}
 				var currIndex = this.iIndex;
 				for (var k = 0; k < oRows[this.iIndex].rowsdata.length; k++) {
 					var record = data.find(function (entry, id) {
@@ -198,6 +211,7 @@ sap.ui.define([
 							this.oControl.setProperty("/overviewDataChanged", true);
 							this.oControl.setProperty("/sendForApproval", true);
 							this.getModel("TimeData").refresh();
+							this.isTimeCategorySelect = true;
 						}
 						/*else {
 							record.TimeEntryOperation = 'C';
