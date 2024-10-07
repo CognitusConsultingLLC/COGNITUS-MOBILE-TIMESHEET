@@ -137,3 +137,8 @@
 	font-weight: normal;
     line-height: 1.125rem;
 }
+
+.sapUiSizeCompact .sapUiCalHead {
+    height: 2rem;
+    padding-top: 1rem;
+}

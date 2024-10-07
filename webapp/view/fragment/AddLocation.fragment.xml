@@ -1,0 +1,12 @@
+<!--
+
+    Copyright (C) 2009-2020 SAP SE or an SAP affiliate company. All rights reserved.
+
+-->
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" class="sapUiSizeCompact"
+	xmlns:smartField="sap.ui.comp.smartfield">
+	<SelectDialog id="idWorkLocationsDialog" title="Select Work Location" search="onWorkLocationsSearch" confirm="onWorkLocationsClose"
+		cancel="handleLocationClose" items="{WorkLocations>/}" contentWidth="500px" contentHeight="300px" liveChange="onWorkLocationsLiveChange">
+		<StandardListItem title="{WorkLocations>SHORT}" description="{WorkLocations>STEXT}"/>
+	</SelectDialog>
+</core:FragmentDefinition>

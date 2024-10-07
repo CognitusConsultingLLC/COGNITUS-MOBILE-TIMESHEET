@@ -12,25 +12,25 @@
 									<Title text="{i18n>projects}"/>
 									<ToolbarSpacer/>
 									<Button text="{i18n>missingProject}" press="onCreateMissingProject" type="Default" tooltip="{i18n>missingProject}"
-									visible="{controls>/createProjectSwitch}"/>
+										visible="{controls>/createProjectSwitch}"/>
 									<Text text="{path:'controls>/worklistCount'}"/>
 								</Toolbar>
-								<VBox  backgroundDesign="Solid" renderType="Bare" class="sapUiSizeCompact class2">
-								<ui:Table rows="{Projects>/}" visibleRowCount="5" columnHeaderVisible="false"  enableSelectAll="false" selectionMode="None"
-									threshold="5" enableColumnReordering="false"  editable="false">
-									<ui:columns>
-										<ui:Column width="" hAlign="Begin">
-											<Label text=""/>
-											<ui:template>
-												<FlexBox alignItems="Start" justifyContent="SpaceBetween">
-													<Text text="{Projects>CombinedText}" wrapping="true" class="sapUiTinyMarginTop"/>
-													<Button icon="sap-icon://add" press="onAddWorkPackageTimeEntries1" tooltip="{i18n>selectwp}" class="cclass"/>
-													<Text text="{Projects>Pspid}" visible="false"/>
-												</FlexBox>
-											</ui:template>
-										</ui:Column>
-									</ui:columns>
-								</ui:Table>
+								<VBox backgroundDesign="Solid" renderType="Bare" class="sapUiSizeCompact class2">
+									<ui:Table rows="{Projects>/}" visibleRowCount="5" columnHeaderVisible="false" enableSelectAll="false" selectionMode="None" threshold="5"
+										enableColumnReordering="false" editable="false">
+										<ui:columns>
+											<ui:Column width="" hAlign="Begin">
+												<Label text=""/>
+												<ui:template>
+													<FlexBox alignItems="Start" justifyContent="SpaceBetween">
+														<Text text="{Projects>CombinedText}" wrapping="true" class="sapUiTinyMarginTop"/>
+														<Button icon="sap-icon://add" press="onAddWorkPackageTimeEntries1" tooltip="{i18n>selectwp}" class="cclass"/>
+														<Text text="{Projects>Pspid}" visible="false"/>
+													</FlexBox>
+												</ui:template>
+											</ui:Column>
+										</ui:columns>
+									</ui:Table>
 								</VBox>
 							</sap.ui.layout:VerticalLayout>
 							<sap.ui.layout:VerticalLayout width="55%" visible="{= ${device>/system/phone} ? false : true}" class="sapUiContentPadding">
@@ -41,24 +41,24 @@
 										tooltip="{path:'controls>/overallWeekStatus', formatter:'.formatter.IconTooltip'}"
 										backgroundColor="{=${path:'controls>/overallWeekStatus'} === '30'? '#355e3b': ''}" class="classicon"/>
 								</Toolbar>
-								<VBox backgroundDesign="Solid" renderType="Bare" class="sapUiSizeCompact class2"> 
-								<u:CalendarDateInterval id="calendardateinterval" width="100%" legend="legend" startDateChange="onStartDateChange"
-									minDate="{path:'TimeEntries>/0/JoiningDate',formatter:'.formatter.getUTCDate'}" pickerPopup="false"
-									maxDate="{path:'TimeEntries>/0/CaleNavMaxDate',formatter:'.formatter.getUTCDate'}" showWeekNumbers="false"/>
-								<u:CalendarLegend id="legend">
-									<u:items>
-										<u:CalendarLegendItem text="{i18n>timeCompleted}" type="Type08" color="#667C26"/>
-										<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01" color="#FFA500"/>
-										<!--<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01"/>-->
-										<u:CalendarLegendItem text="{i18n>timeRejected}" type="Type03" color="#F62217"/>
-										<u:CalendarLegendItem text="{i18n>submitted}" type="Type04" color="#A7C7E7"/>
-										<!--<u:CalendarLegendItem text="{i18n>submitted}" type="Type16" color="#A7C7E7"/>-->
-									</u:items>
-								</u:CalendarLegend>
+								<VBox backgroundDesign="Solid" renderType="Bare" class="sapUiSizeCompact class2">
+									<u:CalendarDateInterval id="calendardateinterval" width="100%" legend="legend" startDateChange="onStartDateChange"
+										minDate="{path:'TimeEntries>/0/JoiningDate',formatter:'.formatter.getUTCDate'}" pickerPopup="false"
+										maxDate="{path:'TimeEntries>/0/CaleNavMaxDate',formatter:'.formatter.getUTCDate'}" showWeekNumbers="false"/>
+									<u:CalendarLegend id="legend">
+										<u:items>
+											<u:CalendarLegendItem text="{i18n>timeCompleted}" type="Type08" color="#667C26"/>
+											<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01" color="#FFA500"/>
+											<!--<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01"/>-->
+											<u:CalendarLegendItem text="{i18n>timeRejected}" type="Type03" color="#F62217"/>
+											<u:CalendarLegendItem text="{i18n>submitted}" type="Type04" color="#A7C7E7"/>
+											<!--<u:CalendarLegendItem text="{i18n>submitted}" type="Type16" color="#A7C7E7"/>-->
+										</u:items>
+									</u:CalendarLegend>
 								</VBox>
 							</sap.ui.layout:VerticalLayout>
 							<Table id="TOTAL_HOURS" mode="SingleSelectMaster" class="sapUiSmallMarginBegin sapUiMediumMarginEnd sapUiTinyMarginTopBottom" width="auto"
-								visible="true"></Table>
+								visible="{= ${device>/system/phone} ? false : true}"></Table>
 							<Bar visible="{= ${device>/system/phone} ? true : false}">
 								<contentLeft>
 									<Button icon="sap-icon://slim-arrow-left" press="onNavButtonMainPage" visible="{controls>/shownavbuttonMain}"/>
@@ -138,8 +138,7 @@
 													tooltip="{i18n>copyweek}"/>
 											</OverflowToolbar>
 										</headerToolbar>
-										<Table id="ENTRY_LIST_CONTENTS" mode="SingleSelectMaster" visible="{= ${device>/system/phone} ? false : true}"
-										></Table>
+										<Table id="ENTRY_LIST_CONTENTS" mode="SingleSelectMaster" visible="{= ${device>/system/phone} ? false : true}"></Table>
 										<Table id="ENTRY_LIST_CONTENTS_Phone" visible="{= ${device>/system/phone} ? true : false}" noDataText="{i18n>noDataText}"
 											items="{path:'aTableRows>/',templateShareable:true}" showUnread="false" itemPress="onMainTimeEntriesItemPress"
 											swipe="onSwipeMainTimeEntries">
@@ -153,7 +152,13 @@
 												<Column demandPopin="true" hAlign="Center">
 													<Text text="Actios"/>
 												</Column>
-												<Column demandPopin="true" hAlign="End">
+												<Column demandPopin="true" minScreenWidth="Tablet">
+													<Text text="Location"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Tablet">
+													<Text text="Time Category"/>
+												</Column>
+												<Column demandPopin="true" minScreenWidth="Tablet">
 													<Text text="{i18n>total}"/>
 												</Column>
 											</columns>
@@ -163,6 +168,14 @@
 														<ObjectIdentifier title="{aTableRows>posidtitle}" titleActive="true"/>
 														<Button icon="sap-icon://delete" enabled="{path: 'aTableRows>overallWeekStatus',formatter:'.formatter.buttonEnableMain'}"
 															press="performDeleteRowPhone"/>
+														<!--<ObjectIdentifier title="{aTableRows>wrkloc}"/>
+														<ObjectIdentifier title="{aTableRows>timecat}"/>-->
+														<ComboBox items="{ path: 'AvlWorkLocations>/' }" selectedKey="{aTableRows>wrkloc}" enabled="false">
+															<core:Item key="{AvlWorkLocations>OBJID}" text="{AvlWorkLocations>STEXT}"/>
+														</ComboBox>
+														<ComboBox items="{ path: 'AvlTimeCategories>/' }" selectedKey="{aTableRows>timecat}" enabled="false">
+															<core:Item key="{AvlTimeCategories>TIME_CAT}" text="{AvlTimeCategories>DESCRIPTION}"/>
+														</ComboBox>
 														<Text text="{aTableRows>totalweekcatsEntered}"/>
 														<!--<Button icon="sap-icon://delete" enabled="{=${aTableRows>overallWeekStatus === true} ? false : true}"/>-->
 													</cells>
@@ -301,7 +314,7 @@
 					<OverflowToolbar class="sapUiContentPadding">
 						<Button icon="sap-icon://message-popup" text="{message>/length}" type="Emphasized" visible="{= !!${message>/length}}"
 							tooltip="{i18n>messagePopup}" press="handleMessagePopover"/>
-						<Button id="idViewMonth" text="{i18n>viewMonth}" tooltip="{i18n>viewMonth}"  press="onViewMonth" type="Default" class="classbutton"/>
+						<Button id="idViewMonth" text="{i18n>viewMonth}" tooltip="{i18n>viewMonth}" press="onViewMonth" type="Default" class="classbutton"/>
 						<ToolbarSpacer/>
 						<Button text="{i18n>addentry}" tooltip="{i18n>addentry}" type="Emphasized" press="onAddTimeEntryPhone" icon="sap-icon://pending"
 							visible="{= ${device>/system/phone} ? true : false}"/>

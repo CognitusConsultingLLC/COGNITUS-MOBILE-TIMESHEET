@@ -483,14 +483,14 @@ sap.ui.define([
 
 								} else if (sap.ui.Device.system.phone === true && rowDelete === "COPYENTRYDEL") {
 									var oDate = new Date(that.mCalendar.getStartDate());
-									that.startdate = that.getFirstDayOfWeek(oDate, 1);
-									that.enddate = that.getLastDayOfWeek(oDate, 1);
+									that.startdate = that.getFirstDayOfWeek(oDate, 0);
+									that.enddate = that.getLastDayOfWeek(oDate, 0);
 									that.getTimeEntries(that.startdate, that.enddate);
 								} else {
 									oControl.setProperty('/isDataChanged', false);
 									var oDate = new Date(that.mCalendar.getStartDate());
-									that.startdate = that.getFirstDayOfWeek(oDate, 1);
-									that.enddate = that.getLastDayOfWeek(oDate, 1);
+									that.startdate = that.getFirstDayOfWeek(oDate, 0);
+									that.enddate = that.getLastDayOfWeek(oDate, 0);
 									that.getTimeEntries(that.startdate, that.enddate);
 								}
 							},
@@ -538,7 +538,9 @@ sap.ui.define([
 					aTableArray[i]["posidtitle"] = aTableArray[i].posid;
 				}
 				for (var j = 0; j < aTableArray[i].rowsdata.length; j++) {
-					totalEnteredHoursWeek = totalEnteredHoursWeek + parseFloat(aTableArray[i].rowsdata[j].CATSHOURS);
+					if (aTableArray[i].rowsdata[j].CATSHOURS !== "") {
+						totalEnteredHoursWeek = totalEnteredHoursWeek + parseFloat(aTableArray[i].rowsdata[j].CATSHOURS);
+					}
 				}
 				aTableArray[i]["totalweekcatsEntered"] = parseFloat(totalEnteredHoursWeek).toFixed(2);
 				for (var k = 0; k < aTableArray[i].rowsdata.length; k++) {

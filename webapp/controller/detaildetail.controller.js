@@ -39,7 +39,7 @@ sap.ui.define([
 				var data1 = $.extend(true, {}, data);
 				this.getModel("aTableRowsday").setData(data1);
 				this.getModel("aTableRowsday").refresh();
-			}else{
+			} else {
 				this.Router.navTo("default", {});
 			}
 		},
@@ -69,7 +69,9 @@ sap.ui.define([
 					return that.oFormatyyyymmdd.format(entry.TimeEntryDataFields.WORKDATE) === that.oFormatyyyymmdd
 						.format(oDate);
 				});
-				 record.TimeEntryDataFields.CATSHOURS = parseFloat(oEvent.getSource().getValue()).toFixed(2);
+				record.TimeEntryDataFields.CATSHOURS = parseFloat(oEvent.getSource().getValue()).toFixed(2);
+				record.TimeEntryDataFields.WrkLoc = this.getModel("aTableRowsdays").getData()[this.iIndex].wrkloc;
+				record.TimeEntryDataFields.ProjTimeCat = this.getModel("aTableRowsdays").getData()[this.iIndex].timecat;
 				if (record.Counter) {
 					record.TimeEntryOperation = 'U';
 				} else {
@@ -86,38 +88,38 @@ sap.ui.define([
 		onliveChangelongTextItemDetail: function (oEvent) {
 			var sValue = oEvent.getParameters("value").value;
 			var that = this;
-				var data = this.getModel('TimeData').getData();
-				var oData = this.getModel("aTableRowsdays").getData();
-				var sPosid = this.getModel("aTableRowsdays").getData()[this.iIndex].posid;
-				var oDate = this.getModel("aTableRowsdays").getData()[this.iIndex].rowsdata[this.sIndex].WORKDATE;
-				if(sValue){
+			var data = this.getModel('TimeData').getData();
+			var oData = this.getModel("aTableRowsdays").getData();
+			var sPosid = this.getModel("aTableRowsdays").getData()[this.iIndex].posid;
+			var oDate = this.getModel("aTableRowsdays").getData()[this.iIndex].rowsdata[this.sIndex].WORKDATE;
+			if (sValue) {
 				oData[this.iIndex].rowsdata[this.sIndex].LONGTEXT_DATA = sValue;
 				oData[this.iIndex].rowsdata[this.sIndex].LONGTEXT = "X";
-				this.getModel("aTableRowsday").setProperty("/LONGTEXT_DATA",sValue);
-				}else{
+				this.getModel("aTableRowsday").setProperty("/LONGTEXT_DATA", sValue);
+			} else {
 				oData[this.iIndex].rowsdata[this.sIndex].LONGTEXT_DATA = "";
 				oData[this.iIndex].rowsdata[this.sIndex].LONGTEXT = "";
-				this.getModel("aTableRowsday").setProperty("/LONGTEXT_DATA","");
-				}
-				this.getModel("aTableRowsdays").refresh();
-				var record = data.find(function (entry, id) {
-					return that.oFormatyyyymmdd.format(entry.TimeEntryDataFields.WORKDATE) === that.oFormatyyyymmdd
-						.format(oDate);
-				});
-				var iActualTime = that.timeToDecimal(oData[this.iIndex].rowsdata[this.sIndex].CATSHOURS);
-				if (record.Counter) {
-					record.TimeEntryOperation = 'U';
-				} else {
-				if (iActualTime !== 0)	record.TimeEntryOperation = 'C';
-				}
-				record.TimeEntryDataFields.LONGTEXT_DATA = sValue;
-				record.TimeEntryDataFields.LONGTEXT = "X";
-				this.getModel("TimeData").refresh();
-				this.oControl.setProperty("/overviewCancel", true);
-				this.oControl.setProperty("/overviewDataChanged", true);
-				this.oControl.setProperty("/isOverviewChanged", true);
-				this.oControl.setProperty("/sendForApproval", true);
-				sap.m.MessageToast.show(that.getResourceBundle().getText("changed"));
+				this.getModel("aTableRowsday").setProperty("/LONGTEXT_DATA", "");
+			}
+			this.getModel("aTableRowsdays").refresh();
+			var record = data.find(function (entry, id) {
+				return that.oFormatyyyymmdd.format(entry.TimeEntryDataFields.WORKDATE) === that.oFormatyyyymmdd
+					.format(oDate);
+			});
+			var iActualTime = that.timeToDecimal(oData[this.iIndex].rowsdata[this.sIndex].CATSHOURS);
+			if (record.Counter) {
+				record.TimeEntryOperation = 'U';
+			} else {
+				if (iActualTime !== 0) record.TimeEntryOperation = 'C';
+			}
+			record.TimeEntryDataFields.LONGTEXT_DATA = sValue;
+			record.TimeEntryDataFields.LONGTEXT = "X";
+			this.getModel("TimeData").refresh();
+			this.oControl.setProperty("/overviewCancel", true);
+			this.oControl.setProperty("/overviewDataChanged", true);
+			this.oControl.setProperty("/isOverviewChanged", true);
+			this.oControl.setProperty("/sendForApproval", true);
+			sap.m.MessageToast.show(that.getResourceBundle().getText("changed"));
 		},
 
 		/**

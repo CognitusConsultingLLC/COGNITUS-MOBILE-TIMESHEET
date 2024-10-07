@@ -4,13 +4,19 @@
 		<pages>
 			<Page id="detailpage" title="" showNavButton="true" navButtonPress="onNavBacktoDetail">
 				<content>
-					<Table items="{aTableRowsdays>/}">
+					<Table items="{aTableRowsdays>/}" id="wbsDetails">
 						<columns>
 							<Column hAlign="Begin" width="14rem">
 								<Text text="{i18n>cost_assignment}"/>
 							</Column>
-							<Column demandPopin="true" hAlign="End">
+							<Column demandPopin="true">
 								<Text text="Total"/>
+							</Column>
+							<Column demandPopin="true" minScreenWidth="Tablet">
+								<Text text="Location"></Text>
+							</Column>
+							<Column demandPopin="true" hAlign="End" minScreenWidth="Tablet">
+								<Text text="Time Category"></Text>
 							</Column>
 						</columns>
 						<items>
@@ -18,6 +24,12 @@
 								<cells>
 									<ObjectIdentifier title="{aTableRowsdays>posidtitle}" titleActive="true"/>
 									<Text text="{aTableRowsdays>totalweekcatsEntered}"/>
+									<ComboBox id="idMobLocVH" items="{ path: 'AvlWorkLocations>/' }" selectedKey="{aTableRowsdays>wrkloc}" change="onMobLocationChange">
+										<core:Item key="{AvlWorkLocations>OBJID}" text="{AvlWorkLocations>STEXT}"/>
+									</ComboBox>
+									<ComboBox id="idMobPTCVH" items="{ path: 'AvlTimeCategories>/' }" selectedKey="{aTableRowsdays>timecat}" change="onMobTCChange">
+										<core:Item key="{AvlTimeCategories>TIME_CAT}" text="{AvlTimeCategories>DESCRIPTION}"/>
+									</ComboBox>
 								</cells>
 							</ColumnListItem>
 						</items>

@@ -26,9 +26,8 @@
 					visible="{= ${path:'TimeData>TimeEntryDataFields/LONGTEXT',formatter:'.formatter'} ? true : false}"
 					text="{path:'TimeData>TimeEntryDataFields/LONGTEXT_DATA',formatter:'.formatText'}"/>
 			</List>
-			<HBox>
+			<HBox visible="false">
 				<VBox class="sapUiSmallMargin">
-					<!--<Label text="Work Location" required="true"/>-->
 					<Label text="Work Location"/>
 					<Input id="idWorkLoc" textFormatMode="KeyValue" showSuggestion="true" showValueHelp="true" valueHelpRequest="onWLValueHelpRequest"></Input>
 				</VBox>
