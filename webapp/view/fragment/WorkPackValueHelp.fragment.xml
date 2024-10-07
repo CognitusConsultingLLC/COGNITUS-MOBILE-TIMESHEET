@@ -1,0 +1,18 @@
+<core:FragmentDefinition
+	xmlns="sap.ui.comp.valuehelpdialog"
+	xmlns:core="sap.ui.core"
+	xmlns:m="sap.m"
+	xmlns:fb="sap.ui.comp.filterbar">
+	<ValueHelpDialog
+		title="{i18n>selectwp}"
+		ok=".onValueHelpOkPressWp"
+		cancel=".onValueHelpCancelPress"
+		afterClose=".onValueHelpAfterClose1"
+		afterOpen ="onValueHelpBeforeOpen1"
+		key="Objnr"
+		descriptionKey="Posid"
+		supportMultiselect="false"
+		tokenDisplayBehaviour="descriptionOnly"
+	>
+	</ValueHelpDialog>
+</core:FragmentDefinition>

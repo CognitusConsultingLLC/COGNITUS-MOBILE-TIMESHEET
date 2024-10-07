@@ -1,0 +1,139 @@
+/* Enter your custom styles here */
+/*.sapMInputBaseReadonly .sapMInputBaseContentWrapper {*/
+/*	background:grey;*/
+/*}*/
+/*.sapUiUnifiedLegend{*/
+/*border: thin solid grey;*/
+/*		border-left: 0.0625rem solid #e5e5e5;*/
+/*    border-right: 0.0625rem solid #e5e5e5;*/
+/*    border-top: 0.0725rem solid #e5e5e5;*/
+/*    border-bottom: thin solid #e5e5e5;*/
+/*}*/
+/*.customclass{*/
+/*paddin:10px;*/
+/*	marginLeft:2px !important;*/
+/*		marginRight:2px !important;*/
+/*}*/
+/*.sapUiCal{*/
+/*border: thin solid grey;*/
+/*	border-left: 0.0625rem solid #e5e5e5;*/
+/*    border-right: 0.0625rem solid #e5e5e5;*/
+/*    border-top: thin solid #e5e5e5;*/
+/*    border-bottom: thin solid #e5e5e5;*/
+/*}*/
+/*.sapMVBox{*/
+/*	padding: 8px 4px 4px 4px;*/
+/*	height: 11rem !important;*/
+/*}*/
+.cclass .sapMBtnInner {
+    /*background-color: #fff !important;*/
+    border-radius: 0.25rem !important;
+    border-color: #0854a0 !important;
+    /*color:#0854a0 !important;*/
+}
+
+.sapUiSizeCompact .sapUiCalItem {
+    height: 2rem;
+    line-height: 1.875rem;
+    border: thin solid grey;
+    border-radius: 0.25rem;
+}
+
+/*.sapUiSizeCompact .sapUiCalItem, .sapUiSizeCompact .sapUiCalWeekNum {*/
+/*	    height: 2rem;*/
+/*    line-height: 1.875rem;*/
+/*    border: thin solid grey;*/
+/*    border-radius:0.25rem;*/
+/*}*/
+.sapUiCalItemSel:not(.sapUiCalItemSelBetween)>.sapUiCalItemText {
+    background-color: #0854a0 !important;
+    box-shadow: inset 0 -0.25rem 0 #0854a0 !important;
+}
+
+.sapUiSizeCompact .sapUiCalHead>button {
+    border-radius: 0.25rem !important;
+    border: thin solid #0854a0 !important;
+}
+
+.classbutton .sapMBtnInner {
+    /*background-color: #fff !important;*/
+    border-radius: 0.25rem !important;
+    border-color: #0854a0 !important;
+    /*color:#0854a0 !important;*/
+}
+
+.classicon .sapUiIcon {
+    color: floralwhite !important;
+    background-color: green !important;
+}
+
+.class2 {
+    padding: 8px 4px 4px 4px;
+    height: 11.5rem !important;
+}
+
+.sapUiCalItemType01>.sapUiCalItemText {
+    background-color: #FFA500 !important;
+    box-shadow: inset 0 -0.25rem 0 #FFA500 !important;
+}
+
+/*.sapUiCalItemType01>.sapUiCalSpecialDate{*/
+/*	border-bottom-left-radius: 0.25rem;*/
+/*    border-bottom-right-radius:0.25rem;*/
+/*}*/
+.sapUiCalItemType03>.sapUiCalItemText {
+    background-color: #F62217 !important;
+    box-shadow: inset 0 -0.25rem 0 #F62217 !important;
+}
+
+.sapUiCalItemType08>.sapUiCalItemText {
+    background-color: #667C26 !important;
+    box-shadow: inset 0 -0.25rem 0 #667C26 !important;
+}
+
+.sapUiCalItemType04>.sapUiCalItemText {
+    background-color: #A7C7E7 !important;
+    box-shadow: inset 0 -0.25rem 0 #A7C7E7 !important;
+}
+
+.sapUiCalItemType05>.sapUiCalItemText {
+    background-color: #ffffff !important;
+    box-shadow: inset 0 -0.25rem 0 #ffffff !important;
+    /*color: #000000 !important;*/
+}
+
+.missingTextColorFuture {
+    color: #000000 !important;
+}
+
+.missingTextColor {
+    color: #FFA500 !important;
+}
+
+.doneTextColor {
+    color: #667C26 !important;
+}
+
+.rejectedTextColor {
+    color: #F62217 !important;
+}
+
+.forapprovalTextColor {
+    /*color:#A7C7E7 !important;*/
+    color: #0a6ed1 !important;
+}
+
+.sapMText.sapMObjLTitle {
+    vertical-align: top;
+    word-break: break-word;
+    color: #32363a;
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: 1.125rem;
+}
+
+.sapMObjLNumberDiv .sapMObjectNumber .sapMObjectNumberText{
+	font-size: 1rem;
+	font-weight: normal;
+    line-height: 1.125rem;
+}

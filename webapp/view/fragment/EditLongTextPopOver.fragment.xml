@@ -1,0 +1,50 @@
+<!--
+
+    Copyright (C) 2009-2020 SAP SE or an SAP affiliate company. All rights reserved.
+
+-->
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" class="sapUiSizeCompact"
+	xmlns:smartField="sap.ui.comp.smartfield">
+	<Dialog title="{i18n>additionaldetails}" contentWidth="40%" beginButton="Close" class="sapUiContentPadding">
+		<content>
+			<Text text="{i18n>comments}" class="sapMTitle sapMTitleStyleAuto"></Text>
+			<FeedInput id="feedInput" post="onPost" showIcon="false" class="sapUiSmallMarginTopBottom"
+				enabled="{= ${path:'TimeData>TimeEntryDataFields/LONGTEXT',formatter:'.formatter'} ? false : true}" placeholder=""></FeedInput>
+			<List showSeparators="Inner">
+				<headerToolbar>
+					<Toolbar>
+						<content>
+							<ToolbarSpacer/>
+							<Button text="{i18n>edit}" press="onLongTextEdit"
+								enabled="{= ${path:'TimeData>TimeEntryDataFields/LONGTEXT',formatter:'.formatter'} ? true : false}"/>
+							<Button text="{i18n>delete}" press="onLongTextDelete"
+								enabled="{= ${path:'TimeData>TimeEntryDataFields/LONGTEXT',formatter:'.formatter'} ? true : false}"/>
+						</content>
+					</Toolbar>
+				</headerToolbar>
+				<FeedListItem sender="{i18n>me}" showIcon="false"
+					visible="{= ${path:'TimeData>TimeEntryDataFields/LONGTEXT',formatter:'.formatter'} ? true : false}"
+					text="{path:'TimeData>TimeEntryDataFields/LONGTEXT_DATA',formatter:'.formatText'}"/>
+			</List>
+			<HBox>
+				<VBox class="sapUiSmallMargin">
+					<!--<Label text="Work Location" required="true"/>-->
+					<Label text="Work Location"/>
+					<Input id="idWorkLoc" textFormatMode="KeyValue" showSuggestion="true" showValueHelp="true" valueHelpRequest="onWLValueHelpRequest"></Input>
+				</VBox>
+				<VBox class="sapUiSmallMargin">
+					<Label text="Project Time Category"/>
+					<ComboBox id="idPTCVH" items="{ path: '/VL_SH_xCGDCxSH_TIME_CAT' }">
+						<core:Item key="{TIME_CAT}" text="{DESCRIPTION}"/>
+					</ComboBox>
+				</VBox>
+			</HBox>
+		</content>
+		<beginButton>
+			<Button text="{i18n>ok}" tooltip="{i18n>ok}" enabled="true" press="handleOk"/>
+		</beginButton>
+		<endButton>
+			<Button text="{i18n>close}" tooltip="{i18n>close}" press="handleClose"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

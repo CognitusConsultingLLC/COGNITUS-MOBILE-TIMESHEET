@@ -1,0 +1,7 @@
+<mvc:View controllerName="cgdc.timesheet.controller.View1" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns:f="sap.f" xmlns="sap.m">
+	<App>
+		<pages>
+			<f:FlexibleColumnLayout autoFocus="false" id="fcl" restoreFocusOnBackNavigation="true" backgroundDesign="Translucent"/>
+		</pages>
+	</App>
+</mvc:View>

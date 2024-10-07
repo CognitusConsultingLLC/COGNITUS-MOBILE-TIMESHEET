@@ -1,0 +1,14 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:u="sap.ui.unified">
+	<ResponsivePopover
+		title="{Name}"
+		class="sapUiResponsivePadding--header sapUiResponsivePadding--footer"
+		placement="Auto"
+		beforeOpen="onBeforeOpenUnifiedCalendar"
+		afterOpen="onAfterOpenUnifiedCalendar">
+		<u:Calendar id="idCalendar" intervalSelection="false" months="1" firstDayOfWeek="1" startDateChange="onStartDateChangeMonth"
+		select="handleCalendarSelect"/>
+	</ResponsivePopover>
+</core:FragmentDefinition>

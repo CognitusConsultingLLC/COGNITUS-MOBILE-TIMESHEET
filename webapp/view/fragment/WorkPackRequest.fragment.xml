@@ -1,0 +1,32 @@
+<core:FragmentDefinition class="sapUiSizeCompact" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core" xmlns:smartField="sap.ui.comp.smartfield">
+	<Dialog title="{i18n>missingwp}">
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<f:SimpleForm  editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3"
+					labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1"
+					columnsL="1" columnsM="1" singleContainerFullSize="false">
+					<f:content>
+						<Label text="{i18n>project}"/>
+						<Input value="{WorkPackData>/Post1Proj}" editable="false" />
+							<smartField:SmartLabel text="{i18n>wp}"/>
+						<smartField:SmartField value="{Posid}" editable="true" change="onValueHelpOkPressWp">
+							<smartField:configuration>
+								<smartField:Configuration displayBehaviour="descriptionAndId" preventInitialDataFetchInValueHelpDialog="false"/>
+							</smartField:configuration>
+						</smartField:SmartField>
+						<Label text="{i18n>projectShortText}"/>
+						<TextArea liveChange="onLiveChangeTextAreaWp" value="{WorkPackData>/message}"></TextArea>
+						
+					</f:content>
+				</f:SimpleForm>
+			</VBox>
+		</content>
+			<beginButton>
+			<Button text="{i18n>request}" tooltip="{i18n>request}" press="handleWorkProjectReqOk" type="Emphasized"/>
+		</beginButton>
+		<endButton>
+			<Button text="{i18n>cancel}" tooltip="{i18n>cancel}" press="handleWorkProjectReqCancel"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

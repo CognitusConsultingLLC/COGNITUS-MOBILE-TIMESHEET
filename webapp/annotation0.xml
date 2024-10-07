@@ -1,0 +1,125 @@
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+	<edmx:Reference Uri="/sap/opu/odata/cgdc/GW_HCMFAB_TIMESHEET_MAIN_SRV/$metadata">
+		<edmx:Include Alias="Metadata" Namespace="CGDC.GW_HCMFAB_TIMESHEET_MAIN_SRV"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2">
+		<edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470968/UI.xml?api=v2">
+		<edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+	</edmx:Reference>
+	<edmx:DataServices>
+		<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="timesheetcgdc.annotation0.CGDC.GW_HCMFAB_TIMESHEET_MAIN_SRV">
+			<!--<Annotations Target="Metadata.C_ProjectVHType/ProfitCenter">-->
+			<!--    <Annotation Term="UI.Hidden" Bool="true"/>-->
+			<!--</Annotations>-->
+			<!--<Annotations Target="Metadata.C_ProjectVHType/CompanyCode">-->
+			<!--    <Annotation Term="UI.Hidden" Bool="true"/>-->
+			<!--</Annotations>-->
+			<!--<Annotations Target="Metadata.C_ProjectVHType/ControllingArea">-->
+			<!--    <Annotation Term="UI.Hidden" Bool="true"/>-->
+			<!--</Annotations>-->
+			<!--<Annotations Target="Metadata.I_WBSElementValueHelpType/Project">-->
+			<!--    <Annotation Term="UI.HiddenFilter" Bool="true"/>-->
+			<!--</Annotations>-->
+			<Annotations Target="Metadata.ProjectDefinition/Pspnr">
+				<Annotation Term="Common.ValueList">
+					<Record Type="Common.ValueListType">
+						<PropertyValue Property="CollectionPath" String="xCGDCxI_ProjectStdVH"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="Common.ValueListParameterInOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="Pspnr"/>
+									<PropertyValue Property="ValueListProperty" String="Project"/>
+								</Record>
+								<Record Type="Common.ValueListParameterOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="Post1"/>
+									<PropertyValue Property="ValueListProperty" String="ProjectDescription"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="ResponsiblePerson"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="ResponsiblePersonName"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="Metadata.WorkPackage/Posid">
+				<Annotation Term="Common.ValueList">
+					<Record Type="Common.ValueListType">
+						<PropertyValue Property="CollectionPath" String="xCGDCxI_WBSELEMENTSTDVH"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="Common.ValueListParameterInOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="Posid"/>
+									<PropertyValue Property="ValueListProperty" String="WBSElement"/>
+								</Record>
+								<Record Type="Common.ValueListParameterOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="Post1"/>
+									<PropertyValue Property="ValueListProperty" String="WBSDescription"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="ResponsiblePerson"/>
+								</Record>
+								<Record Type="Common.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="ResponsiblePersonName"/>
+								</Record>
+								<Record Type="Common.ValueListParameterIn">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="Psphi"/>
+									<PropertyValue Property="ValueListProperty" String="ProjectInternalID"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="Metadata.TimeEntryDataFields/ProjTimeCat">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record>
+						<PropertyValue Property="Label" String=""/>
+						<PropertyValue Property="CollectionPath" String="VL_SH_xCGDCxSH_TIME_CAT"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="ProjTimeCat"/>
+									<PropertyValue Property="ValueListProperty" String="TIME_CAT"/>
+								</Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="DESCRIPTION"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="Metadata.TimeEntryDataFields/WrkLoc">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record>
+						<PropertyValue Property="Label" String=""/>
+						<PropertyValue Property="CollectionPath" String="VL_SH_xCGDCxSH_WRKLOC"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="OTYPE"/>
+								</Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut">
+									<PropertyValue Property="LocalDataProperty" PropertyPath="WrkLoc"/>
+									<PropertyValue Property="ValueListProperty" String="SHORT"/>
+								</Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly">
+									<PropertyValue Property="ValueListProperty" String="STEXT"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="Metadata.xCGDCxI_WBSELEMENTSTDVHType/ProjectInternalID">
+				<Annotation Term="UI.HiddenFilter" Bool="true"/>
+			</Annotations>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

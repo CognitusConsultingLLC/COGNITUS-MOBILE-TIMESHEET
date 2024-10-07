@@ -1,0 +1,23 @@
+<core:FragmentDefinition class="sapUiSizeCompact" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<Dialog title="{i18n>Projecttime}" beforeOpen="onBeforeOpenWPDisplay">
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<Text text="{i18n>workpcktext}"/>
+				<List headerText="" items="{ path: 'WorkPackList>/'}" includeItemInSelection="true" mode="MultiSelect"
+				selectionChange="onWorkPackSelectionChange" itemPress="onWorkPackItemPress">
+					<items>
+						<StandardListItem title="{WorkPackList>WorkListDataFields/Post1}" selected="{WorkPackList>WorkListDataFields/selected}" description="{WorkPackList>WorkListDataFields/POSID}" press="onWorkPackListItemPress"/>
+					</items>
+				</List>
+				<Button text="{i18n>missingWP}" press="onRequestMissingWP" visible="{controls>/createProjectSwitch}"/>
+			</VBox>
+		</content>
+		<beginButton>
+			<Button text="{i18n>ok}" tooltip="{i18n>ok}" press="handleWorkProjectDispOk" type="Emphasized"/>
+		</beginButton>
+		<endButton>
+			<Button text="{i18n>cancel}" tooltip="{i18n>cancel}" press="handleWorkProjectDispCancel"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

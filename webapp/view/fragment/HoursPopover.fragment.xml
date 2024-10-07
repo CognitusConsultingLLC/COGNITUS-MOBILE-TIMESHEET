@@ -1,0 +1,9 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Popover class="sapUiContentPadding" placement="Right" contentHeight="20%" contentWidth="40%" showHeader="false">
+		<content>
+			<SelectList items="{ path: 'ListHours>/' }" itemPress="onHoursItemPress">
+				<core:Item key="{ListHours>key}" text="{ListHours>text}"/>
+			</SelectList>
+		</content>
+	</Popover>
+</core:FragmentDefinition>

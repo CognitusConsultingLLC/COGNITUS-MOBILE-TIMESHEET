@@ -1,0 +1,20 @@
+<!--
+
+    Copyright (C) 2009-2019 SAP SE or an SAP affiliate company. All rights reserved.
+
+-->
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" class="sapUiSizeCompact">
+ <QuickView >
+  <QuickViewPage
+    header="{i18n>assign}">
+   <QuickViewGroup elements="{ path : 'TimeDataDetail>/', templateShareable : 'true'}">
+    <QuickViewGroupElement
+      label="{TimeDataDetail>label}"
+      value="{TimeDataDetail>value}"
+      type="text"
+      >
+    </QuickViewGroupElement>
+   </QuickViewGroup>
+  </QuickViewPage>
+ </QuickView>
+</core:FragmentDefinition>

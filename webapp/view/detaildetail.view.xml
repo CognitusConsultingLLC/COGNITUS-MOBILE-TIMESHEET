@@ -1,0 +1,43 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="cgdc.timesheet.controller.detaildetail"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.ui.layout.form">
+	<App>
+		<pages>
+			<Page title="" id="iddetaildetail" navButtonPress="onNavBacktoDetailDetail" showNavButton="true">
+				<content>
+					<Table items="{aTableRowsdays>/}">
+						<columns>
+							<Column hAlign="Begin" width="14rem">
+								<Text text="{i18n>cost_assignment}"/>
+							</Column>
+							<Column demandPopin="true" hAlign="End">
+								<Text text="Total"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<ObjectIdentifier title="{aTableRowsdays>posidtitle}" titleActive="true"/>
+									<Text text="{aTableRowsdays>totalweekcatsEntered}"/>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3"
+						labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+						singleContainerFullSize="false">
+						<f:content>
+							<Label text="{i18n>hours}"/>
+							<StepInput displayValuePrecision="2" step="1" min="0" textAlign="Center" description="Hours"
+							value="{parts:[{path:'aTableRowsday>/CATSHOURS'},{path:'aTableRowsday>/CATSQUANTITY'},{path:'aTableRowsday>/CATSAMOUNT'}],formatter: '.formatter.calHoursQuanAmountInput'}" change="onChangeHoursStep" editable="{path:'aTableRowsday>/STATUS',formatter:'.formatter.buttonEnabled'}" >
+								
+							</StepInput>
+							<Label text="{i18n>note}"/>
+							<TextArea  value="{aTableRowsday>/LONGTEXT_DATA}" editable="{path:'aTableRowsday>/STATUS',formatter:'.formatter.buttonEnabled'}"
+							liveChange="onliveChangelongTextItemDetail"></TextArea>
+						</f:content>
+					</f:SimpleForm>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>
