@@ -1,51 +1,131 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="cgdc.timesheet.controller.detail"
-	xmlns:html="http://www.w3.org/1999/xhtml">
-	<App>
-		<pages>
-			<Page id="detailpage" title="" showNavButton="true" navButtonPress="onNavBacktoDetail">
-				<content>
-					<Table items="{aTableRowsdays>/}" id="wbsDetails">
-						<columns>
-							<Column hAlign="Begin" width="14rem">
-								<Text text="{i18n>cost_assignment}"/>
-							</Column>
-							<Column demandPopin="true">
-								<Text text="Total"/>
-							</Column>
-							<Column demandPopin="true" minScreenWidth="Tablet">
-								<Text text="Location"></Text>
-							</Column>
-							<Column demandPopin="true" hAlign="End" minScreenWidth="Tablet">
-								<Text text="Time Category"></Text>
-							</Column>
-						</columns>
-						<items>
-							<ColumnListItem>
-								<cells>
-									<ObjectIdentifier title="{aTableRowsdays>posidtitle}" titleActive="true"/>
-									<Text text="{aTableRowsdays>totalweekcatsEntered}"/>
-									<ComboBox id="idMobLocVH" items="{ path: 'AvlWorkLocations>/' }" selectedKey="{aTableRowsdays>wrkloc}" change="onMobLocationChange">
-										<core:Item key="{AvlWorkLocations>OBJID}" text="{AvlWorkLocations>STEXT}"/>
-									</ComboBox>
-									<ComboBox id="idMobPTCVH" items="{ path: 'AvlTimeCategories>/' }" selectedKey="{aTableRowsdays>timecat}" change="onMobTCChange">
-										<core:Item key="{AvlTimeCategories>TIME_CAT}" text="{AvlTimeCategories>DESCRIPTION}"/>
-									</ComboBox>
-								</cells>
-							</ColumnListItem>
-						</items>
-					</Table>
-				</content>
-				<footer>
-					<OverflowToolbar>
-						<ToolbarSpacer/>
-						<Button text="{i18n>save}" tooltip="{i18n>save}" type="Transparent" press="onSaveConfirm" icon="sap-icon://save"
-							visible="{controls>/sendForApproval}"></Button>
-						<Button type="Emphasized" text="{i18n>submit}>" tooltip="{i18n>submit}" enabled="{controls>/overviewDataChanged}" press="onSendApproval"
-							visible="{controls>/sendForApproval}" icon="sap-icon://time-entry-request"/>
-						<Button text="{i18n>cancel}" tooltip="{i18n>cancel}" type="Transparent" press="onCancelConfirm" visible="{controls>/overviewCancel}"/>
-					</OverflowToolbar>
-				</footer>
-			</Page>
-		</pages>
-	</App>
+<mvc:View
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    controllerName="cgdc.timesheet.controller.detail"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+>
+    <App>
+        <pages>
+            <Page
+                id="detailpage"
+                title=""
+                showNavButton="true"
+                navButtonPress="onNavBacktoDetail"
+            >
+                <content>
+                    <MessageStrip
+                        id="msgTeco"
+                        text="Charge code status is TECO or CLSD, no time entry available"
+                        type="Information"
+                        showIcon="true"
+                        showCloseButton="true"
+                        visible="{path:'aTableRowsdays>/0/posid', formatter: '.formatter.isMsgStripVisible'}"
+                    />
+                    <Table
+                        items="{aTableRowsdays>/}"
+                        id="wbsDetails"
+                    >
+                        <columns>
+                            <Column
+                                hAlign="Begin"
+                                width="14rem"
+                            >
+                                <Text text="{i18n>cost_assignment}" />
+                            </Column>
+                            <Column demandPopin="true">
+                                <Text text="{i18n>total}" />
+                            </Column>
+                            <!-- Location/Timecategory hide/disable/mandatory							 -->
+                            <Column
+                                demandPopin="true"
+                                minScreenWidth="Tablet"
+                                visible="{controls>/columnLocationVisibility}"
+                            >
+                                <!-- visible="{controls>/columnLocationVisibility}" -->
+                                <Text text="{i18n>location}" />
+                            </Column>
+                            <Column
+                                demandPopin="true"
+                                hAlign="End"
+                                minScreenWidth="Tablet"
+                                visible="{controls>/columnTimeCategoryVisibility}"
+                            >
+                                <!-- visible="{controls>/columnTimeCategoryVisibility}" -->
+                                <Text text="{i18n>timeCategory}" />
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem>
+                                <cells>
+                                    <ObjectIdentifier
+                                        title="{aTableRowsdays>posidtitle}"
+                                        titleActive="true"
+                                    />
+                                    <!-- <Text text="{aTableRowsdays>totalweekcatsEntered}"/> -->
+                                    <Text
+                                        text="{path:'aTableRowsdays>totalweekcatsEntered', formatter:'.formatter.hoursformat'}"
+                                    />
+                                    <!-- <ComboBox id="idMobLocVH" items="{ path: 'AvlWorkLocations>/' }" enabled="{path:'aTableRowsdays>posid', formatter:'.formatter.isControlEnabled'}" selectedKey="{aTableRowsdays>wrkloc}" change="onMobLocationChange"> -->
+                                    <ComboBox
+                                        id="idMobLocVH"
+                                        items="{ path: 'AvlWorkLocations>/' }"
+                                        selectedKey="{aTableRowsdays>wrkloc}"
+                                        enabled="{parts:['controls>/columnLocationEnabled','aTableRowsdays>posid'], formatter:'.formatter.isControlEnabled'}"
+                                        change="onMobLocationChange"
+                                    >
+                                        <core:Item
+                                            key="{AvlWorkLocations>OBJID}"
+                                            text="{AvlWorkLocations>STEXT}"
+                                        />
+                                    </ComboBox>
+                                    <ComboBox
+                                        id="idMobPTCVH"
+                                        items="{ path: 'AvlTimeCategories>/' }"
+                                        selectedKey="{aTableRowsdays>timecat}"
+                                        enabled="{parts:['controls>/columnTimeCategoryEnabled','aTableRowsdays>posid'], formatter:'.formatter.isControlEnabled'}"
+                                        change="onMobTCChange"
+                                    >
+                                        <core:Item
+                                            key="{AvlTimeCategories>TIME_CAT}"
+                                            text="{AvlTimeCategories>DESCRIPTION}"
+                                        />
+                                    </ComboBox>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </content>
+                <footer>
+                    <OverflowToolbar>
+                        <ToolbarSpacer />
+                        <Button
+                            text="{i18n>save}"
+                            tooltip="{i18n>save}"
+                            type="Transparent"
+                            press="onSaveConfirm"
+                            icon="sap-icon://save"
+                            visible="{controls>/sendForApproval}"
+                        />
+                        <Button
+                            type="Emphasized"
+                            text="{i18n>submit}>"
+                            tooltip="{i18n>submit}"
+                            enabled="{controls>/overviewDataChanged}"
+                            press="onSendApproval"
+                            visible="false"
+                            icon="sap-icon://time-entry-request"
+                        />
+                        <Button
+                            text="{i18n>cancel}"
+                            tooltip="{i18n>cancel}"
+                            type="Transparent"
+                            press="onCancelConfirm"
+                            visible="{controls>/overviewCancel}"
+                        />
+                    </OverflowToolbar>
+                </footer>
+            </Page>
+        </pages>
+    </App>
 </mvc:View>

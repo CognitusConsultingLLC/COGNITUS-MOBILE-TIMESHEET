@@ -17,52 +17,52 @@ sap.ui.define([], function () {
 			}
 			return dispText;
 		},
-			IconTooltip : function(sValue){
-			if(sValue){
+		IconTooltip: function (sValue) {
+			if (sValue) {
 				var oBundle = this.getModel("i18n").getResourceBundle();
-				var sText="";
-				if(sValue === "10"){
+				var sText = "";
+				if (sValue === "10") {
 					sText = oBundle.getText("timeMissing");
-				//	icon="sap-icon://alert";
-				}else if(sValue === "20"){
+					//	icon="sap-icon://alert";
+				} else if (sValue === "20") {
 					sText = oBundle.getText("timePending");
-				//	icon="sap-icon://process"
-				}else if(sValue === "30"){
+					//	icon="sap-icon://process"
+				} else if (sValue === "30") {
 					sText = oBundle.getText("timeCompleted");
-				//	icon="sap-icon://message-success"
-				}else if(sValue === "40"){
+					//	icon="sap-icon://message-success"
+				} else if (sValue === "40") {
 					sText = oBundle.getText("timeRejected");
-				//	icon="sap-icon://decline"
+					//	icon="sap-icon://decline"
 				}
-			}	
+			}
 			return sText;
 		},
-		IconDisplay : function(sValue){
-			if(sValue){
-				var icon="";
-				if(sValue === "10"){
-					icon="sap-icon://alert";
-				}else if(sValue === "20"){
-					icon="sap-icon://process"
-				}else if(sValue === "30"){
-					icon="sap-icon://message-success"
-				}else if(sValue === "40"){
-					icon="sap-icon://decline"
+		IconDisplay: function (sValue) {
+			if (sValue) {
+				var icon = "";
+				if (sValue === "10") {
+					icon = "sap-icon://alert";
+				} else if (sValue === "20") {
+					icon = "sap-icon://process"
+				} else if (sValue === "30") {
+					icon = "sap-icon://message-success"
+				} else if (sValue === "40") {
+					icon = "sap-icon://decline"
 				}
-			}	
+			}
 			return icon;
 		},
-			colorDisplay : function(sValue){
-			if(sValue){
-				var icon="";
-				if(sValue === "10"){
-					icon="#FFA500";
-				}else if(sValue === "20"){
-					icon="#0a6ed1"
-				}else if(sValue === "30"){
-					icon="#FFFFFF"
-				}else if(sValue === "40"){
-					icon="#F62217"
+		colorDisplay: function (sValue) {
+			if (sValue) {
+				var icon = "";
+				if (sValue === "10") {
+					icon = "#FFA500";
+				} else if (sValue === "20") {
+					icon = "#0a6ed1"
+				} else if (sValue === "30") {
+					icon = "#FFFFFF"
+				} else if (sValue === "40") {
+					icon = "#F62217"
 				}
 			}
 			return icon;
@@ -82,11 +82,11 @@ sap.ui.define([], function () {
 			}
 			return year + '-' + month + '-' + day;
 		},
-		
-			getUTCDate: function (date) {
-				if(date){
-			return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-				}
+
+		getUTCDate: function (date) {
+			if (date) {
+				return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+			}
 
 		},
 
@@ -110,11 +110,13 @@ sap.ui.define([], function () {
 				return false;
 			}
 		},
-		hoursformat : function(sValue){
-			if(!sValue){
-				return "0:00";
-			}else{
-				return sValue;
+		hoursformat: function (sValue) {
+			if (!sValue) {
+				return "00:00";
+			} else {
+				//return sValue;
+				// Commented the above line of code as part of CTS-86
+				return sValue.indexOf(".") > -1 ? sValue.replace(".", ":") : sValue;
 			}
 		},
 		status: function (sValue) {
@@ -129,22 +131,66 @@ sap.ui.define([], function () {
 				return this.oBundle.getText('Rejected');
 			} else if (sValue == '100') {
 				return this.oBundle.getText('allStatus');
-			}else{
+			} else {
 				return this.oBundle.getText('noentry');
 			}
 
 		},
-		buttonEnabled : function(sValue){
-		if(sValue == '30'){
-			return false;
-		}else{
-			return true;
-		}
-		},
-		buttonEnableMain : function(bVal){
-			if(bVal){
+		buttonEnabled: function (sValue, sValue2) {
+			if (sValue == '30' && sValue2 == "") {
 				return false;
-			}else{
+			} else {
+				return true;
+			}
+		},
+		isNavEnabled: function (sValue, sValue2) {
+			var aWorkListData = this.getModel("Worklist").getData();
+			var aRow = aWorkListData.find(function (entry, id) {
+				return entry.WorkListDataFields.POSID === sValue2;
+			});
+			if (aRow) {
+				if (sValue == '30') {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			else {
+				return false;
+			}
+		},
+		// Added the following function as part of CTS-57 for TECO information
+		isMsgStripVisible: function (sValue) {
+			if (sValue === undefined) {
+				return false;
+			}
+			let aWorkListData = this.getModel("Worklist").getData();
+			let aRow = aWorkListData?.find(function (entry, id) {
+				return entry.WorkListDataFields.POSID === sValue;
+			});
+			if (aRow) { return false; }
+			else { return true; }
+		},
+		isControlEnabled: function (sValueConfig, sValue) {
+			if (sValueConfig) {
+				var aWorkListData = this.getModel("Worklist").getData();
+				var aRow = aWorkListData.find(function (entry, id) {
+					return entry.WorkListDataFields.POSID === sValue;
+				});
+				if (aRow) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			else {
+				return sValueConfig;
+			}
+		},
+		buttonEnableMain: function (bVal) {
+			if (bVal) {
+				return false;
+			} else {
 				return true;
 			}
 		},
@@ -152,13 +198,13 @@ sap.ui.define([], function () {
 			if (sValue == '10') {
 				return 'Warning';
 			} else if (sValue == '20') {
-				return 'None';
+				return 'Information';
 			} else if (sValue == '30') {
 				return 'Success';
 			} else if (sValue == '40') {
 				return 'Error';
-			}else{
-				return 'None';	
+			} else {
+				return 'None';
 			}
 		},
 		dateString: function (sValue) {
@@ -168,14 +214,14 @@ sap.ui.define([], function () {
 			});
 			return String(this.oFormatYyyymmdd.format(sValue));
 		},
-			dateString3: function (sValue) {
+		dateString3: function (sValue) {
 			this.oFormatYyyymmdd = sap.ui.core.format.DateFormat.getInstance({
 				pattern: "dd/MM/yyyy",
 				calendarType: sap.ui.core.CalendarType.Gregorian
 			});
 			return String(this.oFormatYyyymmdd.format(sValue));
 		},
-			dateString2: function (sValue) {
+		dateString2: function (sValue) {
 			this.oFormatYyyymmdd = sap.ui.core.format.DateFormat.getInstance({
 				pattern: "ddMMyyyy",
 				calendarType: sap.ui.core.CalendarType.Gregorian
@@ -303,22 +349,22 @@ sap.ui.define([], function () {
 		},
 		dayOfWeek: function (sValue) {
 			switch (sValue) {
-			case "SUNDAY":
-				return 0;
-			case "MONDAY":
-				return 1;
-			case "TUESDAY":
-				return 2;
-			case "WEDNESDAY":
-				return 3;
-			case "THURSDAY":
-				return 4;
-			case "FRIDAY":
-				return 5;
-			case "SATURDAY":
-				return 6;
-			default:
-				return 0;
+				case "SUNDAY":
+					return 0;
+				case "MONDAY":
+					return 1;
+				case "TUESDAY":
+					return 2;
+				case "WEDNESDAY":
+					return 3;
+				case "THURSDAY":
+					return 4;
+				case "FRIDAY":
+					return 5;
+				case "SATURDAY":
+					return 6;
+				default:
+					return 0;
 			}
 		},
 		formatTime: function (oTime) {
@@ -334,6 +380,17 @@ sap.ui.define([], function () {
 			oTime = timeParser.parse(oTime);
 			oTime = timeFormatter.format(oTime);
 			return oTime;
+		},
+		formatWeekHoursTime: function (sTime) {
+			if (!sTime) return "";
+
+			var parts = sTime.toString().split(".");
+			var hour = parseInt(parts[0], 10);
+			var minute = parseInt(parts[1] || "0", 10);
+
+			// Pad with leading zeros
+			var formattedTime = (hour < 10 ? "0" + hour : hour) + ":" + (minute < 10 ? "0" + minute : minute);
+			return formattedTime;
 		},
 		convertTime: function (oTime) {
 			var timeFormat = sap.ui.core.format.DateFormat
@@ -372,7 +429,7 @@ sap.ui.define([], function () {
 				return oAssignment;
 			} else if (((oAssignmentId === "" || parseFloat(oAssignmentId).toFixed(2) === parseFloat("0.0000000").toFixed(2)) && Counter !== "")) {
 				return this.oBundle.getText('noAssignment');
-			}else{
+			} else {
 				return oAssignment;
 			}
 		},
@@ -419,26 +476,26 @@ sap.ui.define([], function () {
 		},
 		typeKind: function (oType) {
 			switch (oType) {
-			case "C":
-				return sap.m.InputType.Text;
-			case "N":
-				return sap.m.InputType.Number;
-			default:
-				return sap.m.InputType.Text;
+				case "C":
+					return sap.m.InputType.Text;
+				case "N":
+					return sap.m.InputType.Number;
+				default:
+					return sap.m.InputType.Text;
 			}
 
 		},
 		fieldLength: function (oLength, oType) {
 			if (oLength !== undefined && oLength !== null) {
 				switch (oType) {
-				case "C":
-					return parseInt(oLength);
-				case "N":
-					return parseInt(oLength);
-				case "D":
-					return parseInt(oLength);
-				default:
-					return parseInt(oLength);
+					case "C":
+						return parseInt(oLength);
+					case "N":
+						return parseInt(oLength);
+					case "D":
+						return parseInt(oLength);
+					default:
+						return parseInt(oLength);
 				}
 
 			} else {
@@ -485,30 +542,30 @@ sap.ui.define([], function () {
 				maxFractionDigits: 3
 			});
 			if (parseFloat(catsHours).toFixed(2) === parseFloat("0.00").toFixed(2) && parseFloat(catsQuantity).toFixed(2) === parseFloat("0.00").toFixed(
-					2) && parseFloat(catsAmount).toFixed(2) === parseFloat("0.00").toFixed(2)) {
+				2) && parseFloat(catsAmount).toFixed(2) === parseFloat("0.00").toFixed(2)) {
 				return numberFormat.format(catsHours);
 			} else if (parseFloat(catsHours).toFixed(2) !== parseFloat("0.00").toFixed(2) && parseFloat(catsQuantity).toFixed(2) === parseFloat(
-					"0.00").toFixed(
+				"0.00").toFixed(
 					2) && parseFloat(catsAmount).toFixed(2) === parseFloat("0.00").toFixed(2)) {
 				return numberFormat.format(catsHours);
 			} else if (parseFloat(catsHours).toFixed(2) === parseFloat("0.00").toFixed(2) && parseFloat(catsQuantity).toFixed(2) !== parseFloat(
-					"0.00").toFixed(
+				"0.00").toFixed(
 					2) && parseFloat(catsAmount).toFixed(2) === parseFloat("0.00").toFixed(2)) {
 				return numberFormatQuan.format(catsQuantity);
 			} else if (parseFloat(catsHours).toFixed(2) === parseFloat("0.00").toFixed(2) && parseFloat(catsQuantity).toFixed(2) === parseFloat(
-					"0.00").toFixed(
+				"0.00").toFixed(
 					2) && parseFloat(catsAmount).toFixed(2) === parseFloat("0.00").toFixed(2)) {
 				return numberFormat.format(catsAmount);
 			} else if (parseFloat(catsHours).toFixed(2) !== parseFloat("0.00").toFixed(2) && parseFloat(catsQuantity).toFixed(2) !== parseFloat(
-					"0.00").toFixed(
+				"0.00").toFixed(
 					2) && parseFloat(catsAmount).toFixed(2) === parseFloat("0.00").toFixed(2)) {
 				return numberFormat.format(catsHours);
 			} else if (parseFloat(catsHours).toFixed(2) === parseFloat("0.00").toFixed(2) && parseFloat(catsQuantity).toFixed(2) !== parseFloat(
-					"0.00").toFixed(
+				"0.00").toFixed(
 					2) && parseFloat(catsAmount).toFixed(2) !== parseFloat("0.00").toFixed(2)) {
 				return numberFormat.format(catsAmount);
 			} else if (parseFloat(catsHours).toFixed(2) !== parseFloat("0.00").toFixed(2) && parseFloat(catsQuantity).toFixed(2) === parseFloat(
-					"0.00").toFixed(
+				"0.00").toFixed(
 					2) && parseFloat(catsAmount).toFixed(2) !== parseFloat("0.00").toFixed(2)) {
 				return numberFormat.format(catsHours);
 			} else {
@@ -516,6 +573,51 @@ sap.ui.define([], function () {
 			}
 
 		},
+		copyButtonVisible: function (bVal) {
+			if (bVal) {
+				//if (sap.ui.Device.system.phone !== true && bVal) {
+				return true;
+			} else {
+				return false;
+			}
+		},
+		// calHoursQuanAmountInput: function (catsHours, catsQuantity, catsAmount) {
+		// 	// var numberFormat = sap.ui.core.format.NumberFormat.getFloatInstance({
+		// 	//  maxFractionDigits: 2
+		// 	// });
+		// 	// var numberFormatQuan = sap.ui.core.format.NumberFormat.getFloatInstance({
+		// 	//  maxFractionDigits: 3
+		// 	// });
+		// 	var catsHours = parseFloat(catsHours).toFixed(2);
+		// 	var catsAmount = parseFloat(catsAmount).toFixed(2);
+		// 	var catsQuantity = parseFloat(catsQuantity).toFixed(2);
+		// 	var zero = parseFloat("0.00").toFixed(2);
+		// 	if (catsHours === zero && catsQuantity === parseFloat("0.00").toFixed(
+		// 		2) && parseFloat(catsAmount).toFixed(2) === zero) {
+		// 		return catsHours;
+		// 	} else if (parseFloat(catsHours).toFixed(2) !== zero && parseFloat(catsQuantity).toFixed(2) === zero &&
+		// 		parseFloat(catsAmount).toFixed(2) === zero) {
+		// 		return catsHours;
+		// 	} else if (parseFloat(catsHours).toFixed(2) === zero && parseFloat(catsQuantity).toFixed(2) !== zero &&
+		// 		parseFloat(catsAmount).toFixed(2) === zero) {
+		// 		return catsQuantity;
+		// 	} else if (parseFloat(catsHours).toFixed(2) === zero && parseFloat(catsQuantity).toFixed(2) === zero &&
+		// 		parseFloat(catsAmount).toFixed(2) === zero) {
+		// 		return catsAmount;
+		// 	} else if (parseFloat(catsHours).toFixed(2) !== zero && parseFloat(catsQuantity).toFixed(2) !== zero &&
+		// 		parseFloat(catsAmount).toFixed(2) === zero) {
+		// 		return catsHours;
+		// 	} else if (parseFloat(catsHours).toFixed(2) === zero && parseFloat(catsQuantity).toFixed(2) !== zero &&
+		// 		parseFloat(catsAmount).toFixed(2) !== zero) {
+		// 		return catsAmount;
+		// 	} else if (parseFloat(catsHours).toFixed(2) !== zero && parseFloat(catsQuantity).toFixed(2) === zero &&
+		// 		parseFloat(catsAmount).toFixed(2) !== zero) {
+		// 		return catsHours;
+		// 	} else {
+		// 		return catsHours;
+		// 	}
+
+		// },
 		calHoursQuanAmountInput: function (catsHours, catsQuantity, catsAmount) {
 			// var numberFormat = sap.ui.core.format.NumberFormat.getFloatInstance({
 			//  maxFractionDigits: 2
@@ -523,36 +625,38 @@ sap.ui.define([], function () {
 			// var numberFormatQuan = sap.ui.core.format.NumberFormat.getFloatInstance({
 			//  maxFractionDigits: 3
 			// });
-			var catsHours = parseFloat(catsHours).toFixed(2);
-			var catsAmount = parseFloat(catsAmount).toFixed(2);
-			var catsQuantity = parseFloat(catsQuantity).toFixed(2);
-			var zero = parseFloat("0.00").toFixed(2);
+			var catsHours = catsHours === undefined || !isNaN(catsHours) ? "0.00" : catsHours;//parseFloat(catsHours).toFixed(2);
+			var catsAmount = catsAmount === undefined || !isNaN(catsAmount) ? "0.00" : catsAmount;//parseFloat(catsAmount).toFixed(2);
+			var catsQuantity = catsQuantity === undefined || !isNaN(catsQuantity) ? "0.00" : catsQuantity;//parseFloat(catsQuantity).toFixed(2);
+
+			var zero = "0.00";//parseFloat("0.00").toFixed(2);
 			if (catsHours === zero && catsQuantity === parseFloat("0.00").toFixed(
-					2) && parseFloat(catsAmount).toFixed(2) === zero) {
-				return catsHours;
+				2) && parseFloat(catsAmount).toFixed(2) === zero) {
+				return catsHours.replace(".", ":");
 			} else if (parseFloat(catsHours).toFixed(2) !== zero && parseFloat(catsQuantity).toFixed(2) === zero &&
 				parseFloat(catsAmount).toFixed(2) === zero) {
-				return catsHours;
+				return catsHours.replace(".", ":");
 			} else if (parseFloat(catsHours).toFixed(2) === zero && parseFloat(catsQuantity).toFixed(2) !== zero &&
 				parseFloat(catsAmount).toFixed(2) === zero) {
-				return catsQuantity;
+				return catsQuantity.replace(".", ":");
 			} else if (parseFloat(catsHours).toFixed(2) === zero && parseFloat(catsQuantity).toFixed(2) === zero &&
 				parseFloat(catsAmount).toFixed(2) === zero) {
-				return catsAmount;
+				return catsAmount.replace(".", ":");
 			} else if (parseFloat(catsHours).toFixed(2) !== zero && parseFloat(catsQuantity).toFixed(2) !== zero &&
 				parseFloat(catsAmount).toFixed(2) === zero) {
-				return catsHours;
+				return catsHours.replace(".", ":");
 			} else if (parseFloat(catsHours).toFixed(2) === zero && parseFloat(catsQuantity).toFixed(2) !== zero &&
 				parseFloat(catsAmount).toFixed(2) !== zero) {
-				return catsAmount;
+				return catsAmount.replace(".", ":");
 			} else if (parseFloat(catsHours).toFixed(2) !== zero && parseFloat(catsQuantity).toFixed(2) === zero &&
 				parseFloat(catsAmount).toFixed(2) !== zero) {
-				return catsHours;
+				return catsHours.replace(".", ":");
 			} else {
-				return catsHours;
+				return catsHours.replace(".", ":");
 			}
 
 		}
+
 	};
 
 });

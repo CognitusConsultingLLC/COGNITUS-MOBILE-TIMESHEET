@@ -132,13 +132,121 @@
     line-height: 1.125rem;
 }
 
-.sapMObjLNumberDiv .sapMObjectNumber .sapMObjectNumberText{
-	font-size: 1rem;
-	font-weight: normal;
+.sapMObjLNumberDiv .sapMObjectNumber .sapMObjectNumberText {
+    font-size: 1rem;
+    font-weight: normal;
     line-height: 1.125rem;
 }
 
 .sapUiSizeCompact .sapUiCalHead {
     height: 2rem;
     padding-top: 1rem;
+}
+
+.width20 {
+    width: 20%;
+}
+
+.width40 {
+    width: 40%;
+}
+
+.minWidth100 {
+    min-width: 100%;
+    display: block;
+}
+
+.sapMLnkText {
+    white-space: normal !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.customWidth45 {
+    max-width: 45%;
+}
+
+.sapFFCL .sapFFCLColumn {
+    visibility: inherit;
+}
+
+.sapMBarPH {
+    justify-content: left;
+}
+
+/*.sapUiCalHeadB {
+    width: 10rem !important;
+}*/
+
+.sapMInputBaseContentWrapperSuccess {
+    background: none;
+    border: .125rem solid #667C26;
+}
+
+.sapMObjStatusSuccess .sapMObjStatusText {
+    color: #667C26 !important;
+}
+
+.sapMInputBaseContentWrapperInformation {
+    background: none;
+    border: .125rem solid #A7C7E7;
+}
+
+.sapMObjStatusInformation .sapMObjStatusText {
+    color: #A7C7E7 !important;
+}
+
+
+.sapMInputBaseContentWrapperWarning {
+    background: none;
+    border: .125rem solid #FFFF00;
+}
+
+.sapMObjStatusWarning .sapMObjStatusText {
+    color: #FFFF00 !important;
+}
+
+.sapMTextBaseContentWrapperWarning {
+    color: #FFFF00 !important;
+}
+
+.sapMInputBaseContentWrapperError {
+    background: none;
+    border: .125rem solid #F62217;
+}
+
+.sapMObjStatusError .sapMObjStatusText {
+    color: #F62217 !important;
+}
+
+.sapUiCalItemType01>.sapUiCalSpecialDate {
+	border-top: 0rem !important;
+}
+
+.sapUiCalItemType03>.sapUiCalSpecialDate {
+	border-top: 0rem !important;
+}
+
+.sapUiCalItemType04>.sapUiCalSpecialDate {
+	border-top: 0rem !important;
+}
+
+.sapUiCalItemType08>.sapUiCalSpecialDate {
+	border-top: 0rem !important;
+}
+
+.sapUiCalItemType05>.sapUiCalSpecialDate {
+	border-top: 0rem !important;
+}
+
+.sapMInputBaseReadonlyWrapper {
+    opacity: .4;
+}
+
+.legendAdjustment{
+    padding-bottom: 0rem !important;
+}
+
+[data-colour="red"]{
+    color: red;
 }

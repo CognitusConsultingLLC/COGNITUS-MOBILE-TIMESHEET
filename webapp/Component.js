@@ -22,23 +22,26 @@ sap.ui.define([
 			this.setModel(new sap.ui.model.json.JSONModel(), "ZattabsModel");
 			this.setModel(new sap.ui.model.json.JSONModel(), "ZattabsModelSecBased");
 			this.setModel(new sap.ui.model.json.JSONModel(), "EmpDetailModel");
-			this.setModel(new sap.ui.model.json.JSONModel(),"aTableRows");
-			this.setModel(new sap.ui.model.json.JSONModel(),"aTableRowsAbs");
-			this.setModel(new sap.ui.model.json.JSONModel(),"aTableRowsMain");
-			this.setModel(new sap.ui.model.json.JSONModel(),"aTableRowsHours");
-			this.setModel(new sap.ui.model.json.JSONModel(),"aTableRowsdays");
-			this.setModel(new sap.ui.model.json.JSONModel(),"aTableRowsday");
-			this.setModel(new sap.ui.model.json.JSONModel(),"TimeData");
-			this.setModel(new sap.ui.model.json.JSONModel(),"TimeDataTemp");
-			this.setModel(new sap.ui.model.json.JSONModel(),"AdminTypeData");
-			this.setModel(new sap.ui.model.json.JSONModel(),"Worklist");
-			this.setModel(new sap.ui.model.json.JSONModel(),"Projects");
-			this.setModel(new sap.ui.model.json.JSONModel(),"controls");
+			this.setModel(new sap.ui.model.json.JSONModel(), "aTableRows");
+			this.setModel(new sap.ui.model.json.JSONModel(), "aTableRowsAbs");
+			this.setModel(new sap.ui.model.json.JSONModel(), "aTableRowsMain");
+			this.setModel(new sap.ui.model.json.JSONModel(), "aTableExistingEntries");
+			this.setModel(new sap.ui.model.json.JSONModel(), "aTableRowsHours");
+			this.setModel(new sap.ui.model.json.JSONModel(), "aTableRowsdays");
+			this.setModel(new sap.ui.model.json.JSONModel(), "aTableRowsday");
+			this.setModel(new sap.ui.model.json.JSONModel(), "TimeData");
+			this.setModel(new sap.ui.model.json.JSONModel(), "TimeDataTemp");
+			this.setModel(new sap.ui.model.json.JSONModel(), "AdminTypeData");
+			this.setModel(new sap.ui.model.json.JSONModel(), "Worklist");
+			this.setModel(new sap.ui.model.json.JSONModel(), "Projects");
+			this.setModel(new sap.ui.model.json.JSONModel(), "controls");
 			this.setModel(new sap.ui.model.json.JSONModel(), 'deleteRecords');
 			this.setModel(new sap.ui.model.json.JSONModel(), 'changedRecords');
 			this.setModel(new sap.ui.model.json.JSONModel(), 'newRecords');
 			this.setModel(new sap.ui.model.json.JSONModel(), 'OdataResponseData');
 			this.setModel(new sap.ui.model.json.JSONModel(), 'DuplicateRecords');
+			this.setModel(new sap.ui.model.json.JSONModel(), 'ChangeReason');
+			this.setModel(new sap.ui.model.json.JSONModel(), 'aMobDaySummary');
 			this.oMessageProcessor = new sap.ui.core.message.ControlMessageProcessor();
 			this.oMessageManager = sap.ui.getCore().getMessageManager();
 
@@ -49,11 +52,11 @@ sap.ui.define([
 			UIComponent.prototype.init.apply(this, arguments);
 
 			// enable routing
-			this.getRouter().initialize();
-
+			this.getRouter().initialize();								
+				
 			// set the device model
 			this.setModel(models.createDeviceModel(), "device");
-			
+
 			models.initoRouter(this.getRouter());
 			models.initComponent(this);
 
@@ -86,5 +89,39 @@ sap.ui.define([
 			}
 			return this._sContentDensityClass;
 		}
+		// onBeforeRendering: async function () {
+        //     try {
+        //         await this.checkSF();
+        //     } catch (message) {
+        //         var sMessage = message;
+        //         sap.m.MessageToast.show(sMessage);
+        //         var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+        //                     // Navigate back to FLP home
+        //                     oCrossAppNavigator.toExternal({
+        //                         target: { shellHash: "#" }
+        //                     });
+                
+        //     }
+        // },
+		// checkSF: function () {
+        //     var that = this;
+        //     return new Promise(function (resolve, reject) {
+        //         var oModel = that.getOwnModels().SFDataSource;
+        //         oModel.read("/xCGDCxC_SFCheckEligibility(P_SKUNum='17')/Set", {
+        //             success: function (oData) {
+        //                 if (oData['results'] && oData['results'].length !== 0) {
+        //                     if (oData['results'][0].CheckEnable) {
+        //                         resolve(true);
+        //                     } else {
+        //                         reject(oData['results'][0].LogMessage);
+        //                     }
+        //                 }
+        //             },
+        //             error: function (oError) {
+        //                 resolve(true);
+        //             }
+        //         });
+        //     });
+        // }
 	});
 });

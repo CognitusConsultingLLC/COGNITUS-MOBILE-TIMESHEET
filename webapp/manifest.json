@@ -137,6 +137,16 @@
           "target": [
             "detaildetail"
           ]
+        },
+        {
+            "name": "weeksummary",
+            "pattern": "weeksummary",
+            "titleTarget": "",
+            "layout": "TwoColumnsMidExpanded",
+            "greedy": false,
+            "target": [
+                "weeksummary"
+            ]
         }
       ],
       "targets": {
@@ -161,6 +171,11 @@
           "viewType": "XML",
           "viewName": "detaildetail",
           "controlAggregation": "endColumnPages"
+        },
+        "weeksummary": {
+            "viewType": "XML",
+            "viewName": "weeksummary",
+            "controlAggregation": "midColumnPages"
         }
       }
     }

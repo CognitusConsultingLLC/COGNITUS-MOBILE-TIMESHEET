@@ -1,330 +1,839 @@
-<mvc:View controllerName="cgdc.timesheet.controller.main" xmlns:html="http://www.w3.org/1999/xhtml" displayBlock="true"
-	xmlns:core="sap.ui.core" xmlns:sap.ui.layout="sap.ui.layout" xmlns:u="sap.ui.unified" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
-	class="viewPadding" xmlns:ui="sap.ui.table">
-	<App>
-		<pages>
-			<Page title="Title" showHeader="false" showFooter="{controls>/showFoooterMain}" enableScrolling="false">
-				<content>
-					<sap.ui.layout:FixFlex>
-						<sap.ui.layout:fixContent>
-							<sap.ui.layout:VerticalLayout width="45%" visible="{= ${device>/system/phone} ? false : true}" class="sapUiContentPadding">
-								<Toolbar>
-									<Title text="{i18n>projects}"/>
-									<ToolbarSpacer/>
-									<Button text="{i18n>missingProject}" press="onCreateMissingProject" type="Default" tooltip="{i18n>missingProject}"
-										visible="{controls>/createProjectSwitch}"/>
-									<Text text="{path:'controls>/worklistCount'}"/>
-								</Toolbar>
-								<VBox backgroundDesign="Solid" renderType="Bare" class="sapUiSizeCompact class2">
-									<ui:Table rows="{Projects>/}" visibleRowCount="5" columnHeaderVisible="false" enableSelectAll="false" selectionMode="None" threshold="5"
-										enableColumnReordering="false" editable="false">
-										<ui:columns>
-											<ui:Column width="" hAlign="Begin">
-												<Label text=""/>
-												<ui:template>
-													<FlexBox alignItems="Start" justifyContent="SpaceBetween">
-														<Text text="{Projects>CombinedText}" wrapping="true" class="sapUiTinyMarginTop"/>
-														<Button icon="sap-icon://add" press="onAddWorkPackageTimeEntries1" tooltip="{i18n>selectwp}" class="cclass"/>
-														<Text text="{Projects>Pspid}" visible="false"/>
-													</FlexBox>
-												</ui:template>
-											</ui:Column>
-										</ui:columns>
-									</ui:Table>
-								</VBox>
-							</sap.ui.layout:VerticalLayout>
-							<sap.ui.layout:VerticalLayout width="55%" visible="{= ${device>/system/phone} ? false : true}" class="sapUiContentPadding">
-								<Toolbar>
-									<ToolbarSpacer/>
-									<core:Icon src="{path:'controls>/overallWeekStatus', formatter:'.formatter.IconDisplay'}"
-										color="{path:'controls>/overallWeekStatus', formatter:'.formatter.colorDisplay'}"
-										tooltip="{path:'controls>/overallWeekStatus', formatter:'.formatter.IconTooltip'}"
-										backgroundColor="{=${path:'controls>/overallWeekStatus'} === '30'? '#355e3b': ''}" class="classicon"/>
-								</Toolbar>
-								<VBox backgroundDesign="Solid" renderType="Bare" class="sapUiSizeCompact class2">
-									<u:CalendarDateInterval id="calendardateinterval" width="100%" legend="legend" startDateChange="onStartDateChange"
-										minDate="{path:'TimeEntries>/0/JoiningDate',formatter:'.formatter.getUTCDate'}" pickerPopup="false"
-										maxDate="{path:'TimeEntries>/0/CaleNavMaxDate',formatter:'.formatter.getUTCDate'}" showWeekNumbers="false"/>
-									<u:CalendarLegend id="legend">
-										<u:items>
-											<u:CalendarLegendItem text="{i18n>timeCompleted}" type="Type08" color="#667C26"/>
-											<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01" color="#FFA500"/>
-											<!--<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01"/>-->
-											<u:CalendarLegendItem text="{i18n>timeRejected}" type="Type03" color="#F62217"/>
-											<u:CalendarLegendItem text="{i18n>submitted}" type="Type04" color="#A7C7E7"/>
-											<!--<u:CalendarLegendItem text="{i18n>submitted}" type="Type16" color="#A7C7E7"/>-->
-										</u:items>
-									</u:CalendarLegend>
-								</VBox>
-							</sap.ui.layout:VerticalLayout>
-							<Table id="TOTAL_HOURS" mode="SingleSelectMaster" class="sapUiSmallMarginBegin sapUiMediumMarginEnd sapUiTinyMarginTopBottom" width="auto"
-								visible="{= ${device>/system/phone} ? false : true}"></Table>
-							<Bar visible="{= ${device>/system/phone} ? true : false}">
-								<contentLeft>
-									<Button icon="sap-icon://slim-arrow-left" press="onNavButtonMainPage" visible="{controls>/shownavbuttonMain}"/>
-								</contentLeft>
-								<contentRight>
-									<core:Icon src="{path:'controls>/overallWeekStatus', formatter:'.formatter.IconDisplay'}"
-										color="{path:'controls>/overallWeekStatus', formatter:'.formatter.colorDisplay'}"/>
-								</contentRight>
-							</Bar>
-							<u:CalendarDateInterval id="calendardateintervalp" width="100%" legend="legend1" class="sapUiTinyMarginTop"
-								startDateChange="onStartDateChange" minDate="{path:'TimeEntries>/0/mindate',formatter:'.formatter.getUTCDate'}" pickerPopup="false"
-								maxDate="{path:'TimeEntries>/0/CaleNavMaxDate',formatter:'.formatter.getUTCDate'}" visible="{= ${device>/system/phone} ? true : false}"/>
-							<u:CalendarLegend id="legend1" visible="{= ${device>/system/phone} ? true : false}">
-								<u:items>
-									<u:CalendarLegendItem text="{i18n>timeCompleted}" type="Type08" color="#667C26"/>
-									<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01" color="#FFA500"/>
-									<!--<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01"/>-->
-									<u:CalendarLegendItem text="{i18n>timeRejected}" type="Type03" color="#F62217"/>
-									<u:CalendarLegendItem text="{i18n>submitted}" type="Type04" color="#A7C7E7"/>
-									<!--<u:CalendarLegendItem text="{i18n>submitted}" type="Type16" color="#A7C7E7"/>-->
-								</u:items>
-							</u:CalendarLegend>
-							<!--	</sap.ui.layout:content>-->
-							<!--</sap.ui.layout:Grid>-->
-						</sap.ui.layout:fixContent>
-						<sap.ui.layout:flexContent>
-							<ScrollContainer vertical="true" height="100%" focusable="true" class="sapUiNoMarginTop">
-								<content>
-									<VBox visible="{controls>/flexContentProjects}">
-										<Panel>
-											<List headerText="{i18n>projects}" items="{path: 'Worklist>/'}" growing="true" growingScrollToLoad="true">
-												<headerToolbar>
-													<Toolbar>
-														<Title text="{i18n>projects}"/>
-														<ToolbarSpacer/>
-														<Button text="{i18n>missingProject}" press="onCreateMissingProject"/>
-														<Text text="{path:'controls>/worklistCount'}"/>
-													</Toolbar>
-												</headerToolbar>
-												<CustomListItem press="onWorkListTypePress" type="Active">
-													<HBox>
-														<FlexBox alignItems="Start" justifyContent="SpaceBetween">
-															<Text text="{Worklist>WorkListDataFields/ZPOSIDTEXT}" class="sapUiTinyMarginTopBottom"/>
-															<!--<Button icon="sap-icon://add" press="onAddWorkPackageTimeEntries"/>-->
-														</FlexBox>
-													</HBox>
-												</CustomListItem>
-												<!--<StandardListItem title="{Worklist>WorkListDataFields/ZPOSIDTEXT}" iconDensityAware="false" iconInset="false" press="onWorkListTypePress"/>-->
-											</List>
-										</Panel>
-										<Panel>
-											<List headerText="{i18n>admintime}" items="{path: 'AdminTypeData>/'}" growing="true" growingScrollToLoad="true" growingThreshold="5"
-												itemPress="onAdminTypePress" swipe="onSwipeAdminTypes">
-												<headerToolbar>
-													<Toolbar>
-														<Title text="{i18n>admintime}"/>
-														<ToolbarSpacer/>
-														<Text text="{path:'controls>/AdminTypeCount'}"/>
-													</Toolbar>
-												</headerToolbar>
-												<swipeContent>
-													<Button icon="sap-icon://accept"/>
-												</swipeContent>
-												<StandardListItem title="{AdminTypeData>Atext}" description="{AdminTypeData>Awart}" iconDensityAware="false" iconInset="false"
-													type="Navigation"/>
-											</List>
-										</Panel>
-									</VBox>
-									<Panel expandable="true" expanded="true" class="sapUiNoMarginTop" width="auto">
-										<headerToolbar>
-											<OverflowToolbar>
-												<Title text="{i18n>projectTime}"/>
-												<Button id="Add_Assignment" text="" icon="sap-icon://add" iconFirst="true" width="auto" class="cclass" enabled="true"
-													press="onAddAssignmentMultiWbs" visible="{= ${device>/system/phone} ? false : true}" tooltip="{i18n>selectwp}"/>
-												<ToolbarSpacer/>
-												<Button text="{i18n>copyweek}" visible="{controls>/prevWeekBut}" press="onCopyPreviousWeek" type="Emphasized" icon="sap-icon://copy"
-													tooltip="{i18n>copyweek}"/>
-											</OverflowToolbar>
-										</headerToolbar>
-										<Table id="ENTRY_LIST_CONTENTS" mode="SingleSelectMaster" visible="{= ${device>/system/phone} ? false : true}"></Table>
-										<Table id="ENTRY_LIST_CONTENTS_Phone" visible="{= ${device>/system/phone} ? true : false}" noDataText="{i18n>noDataText}"
-											items="{path:'aTableRows>/',templateShareable:true}" showUnread="false" itemPress="onMainTimeEntriesItemPress"
-											swipe="onSwipeMainTimeEntries">
-											<swipeContent>
-												<Button icon="sap-icon://accept"/>
-											</swipeContent>
-											<columns>
-												<Column hAlign="Begin" width="13rem">
-													<Text text="{i18n>cost_assignment}"/>
-												</Column>
-												<Column demandPopin="true" hAlign="Center">
-													<Text text="Actios"/>
-												</Column>
-												<Column demandPopin="true" minScreenWidth="Tablet">
-													<Text text="Location"/>
-												</Column>
-												<Column demandPopin="true" minScreenWidth="Tablet">
-													<Text text="Time Category"/>
-												</Column>
-												<Column demandPopin="true" minScreenWidth="Tablet">
-													<Text text="{i18n>total}"/>
-												</Column>
-											</columns>
-											<items>
-												<ColumnListItem type="Navigation">
-													<cells>
-														<ObjectIdentifier title="{aTableRows>posidtitle}" titleActive="true"/>
-														<Button icon="sap-icon://delete" enabled="{path: 'aTableRows>overallWeekStatus',formatter:'.formatter.buttonEnableMain'}"
-															press="performDeleteRowPhone"/>
-														<!--<ObjectIdentifier title="{aTableRows>wrkloc}"/>
+<mvc:View
+    controllerName="cgdc.timesheet.controller.main"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    displayBlock="true"
+    xmlns:core="sap.ui.core"
+    xmlns:sap.ui.layout="sap.ui.layout"
+    xmlns:u="sap.ui.unified"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    class="viewPadding"
+    xmlns:ui="sap.ui.table"
+>
+    <App>
+        <pages>
+            <Page
+                title="Title"
+                showHeader="false"
+                showFooter="{controls>/showFoooterMain}"
+                enableScrolling="false"
+            >
+                <content>
+                    
+                    <!-- <MessageStrip class="idMsgStrip" text="Please submit time sheet">
+                        <customData>
+                             <core:CustomData key="font-style" value="italic" writeToDom="true" /> 
+                        </customData>
+                    </MessageStrip> -->
+                    <sap.ui.layout:FixFlex>
+                        <sap.ui.layout:fixContent>
+                            <sap.ui.layout:VerticalLayout
+                                visible="{= ${device>/system/phone} ? false : true}"
+                                class="sapUiContentPadding customWidth45"
+                            >
+                                <Toolbar>
+                                    <Title text="{i18n>projects}" />
+                                    <ToolbarSpacer />
+                                </Toolbar>
+                                <VBox
+                                    backgroundDesign="Solid"
+                                    renderType="Bare"
+                                    class="sapUiSizeCompact class2"
+                                >
+                                    <ui:Table
+                                        rows="{Projects>/}"
+                                        visibleRowCount="5"
+                                        columnHeaderVisible="false"
+                                        enableSelectAll="false"
+                                        selectionMode="None"
+                                        threshold="5"
+                                        enableColumnReordering="false"
+                                        editable="false"
+                                    >
+                                        <ui:columns>
+                                            <ui:Column
+                                                width=""
+                                                hAlign="Begin"
+                                            >
+                                                <Label text="" />
+                                                <ui:template>
+                                                    <FlexBox
+                                                        alignItems="Start"
+                                                        justifyContent="SpaceBetween"
+                                                    >
+                                                        <Text
+                                                            text="{Projects>CombinedText}"
+                                                            wrapping="true"
+                                                            class="sapUiTinyMarginTop"
+                                                        />
+                                                        <Button
+                                                            icon="sap-icon://add"
+                                                            press="onAddWorkPackageTimeEntries1"
+                                                            tooltip="{i18n>selectwp}"
+                                                            class="cclass"
+                                                        />
+                                                        <Text
+                                                            text="{Projects>Pspid}"
+                                                            visible="false"
+                                                        />
+                                                    </FlexBox>
+                                                </ui:template>
+                                            </ui:Column>
+                                        </ui:columns>
+                                    </ui:Table>
+                                </VBox>
+                            </sap.ui.layout:VerticalLayout>
+                            <sap.ui.layout:VerticalLayout
+                                width="55%"
+                                visible="{= ${device>/system/phone} ? false : true}"
+                                class="sapUiContentPadding"
+                            >
+                                <Toolbar>
+                                    <ToolbarSpacer />
+                                    <core:Icon
+                                        src="{path:'controls>/overallWeekStatus', formatter:'.formatter.IconDisplay'}"
+                                        color="{path:'controls>/overallWeekStatus', formatter:'.formatter.colorDisplay'}"
+                                        tooltip="{path:'controls>/overallWeekStatus', formatter:'.formatter.IconTooltip'}"
+                                        backgroundColor="{=${path:'controls>/overallWeekStatus'} === '30'? '#355e3b': ''}"
+                                        class="classicon"
+                                    />
+                                </Toolbar>
+                                <VBox
+                                    backgroundDesign="Solid"
+                                    renderType="Bare"
+                                    class="sapUiSizeCompact class2"
+                                >
+                                    <u:CalendarDateInterval
+                                        id="calendardateinterval"
+                                        width="100%"
+                                        legend="legend"
+                                        startDateChange="onStartDateChange"
+                                        minDate="{path:'TimeEntries>/0/JoiningDate',formatter:'.formatter.getUTCDate'}"
+                                        pickerPopup="true"
+                                        maxDate="{path:'TimeEntries>/0/CaleNavMaxDate',formatter:'.formatter.getUTCDate'}"
+                                        showWeekNumbers="false"
+                                    />
+                                    <u:CalendarLegend id="legend" class="legendAdjustment">
+                                        <u:items>
+                                            <u:CalendarLegendItem
+                                                text="{i18n>timeCompleted}"
+                                                type="Type08"
+                                                color="#667C26"
+                                            />
+                                            <u:CalendarLegendItem
+                                                text="{i18n>timeMissing}"
+                                                type="Type01"
+                                                color="#FFA500"
+                                            />
+                                            <!--<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01"/>-->
+                                            <u:CalendarLegendItem
+                                                text="{i18n>timeRejected}"
+                                                type="Type03"
+                                                color="#F62217"
+                                            />
+                                            <u:CalendarLegendItem
+                                                text="{i18n>submitted}"
+                                                type="Type04"
+                                                color="#A7C7E7"
+                                            />
+                                            <!--<u:CalendarLegendItem text="{i18n>submitted}" type="Type16" color="#A7C7E7"/>-->
+                                            <u:CalendarLegendItem
+                                                text="Draft"
+                                                type="Type09"
+                                                color="#FFFF00"
+                                            />
+                                        </u:items>
+                                    </u:CalendarLegend>
+                                </VBox>
+                            </sap.ui.layout:VerticalLayout>
+                            <Table
+                                id="TOTAL_HOURS"
+                                mode="SingleSelectMaster"
+                                class="sapUiSmallMarginBegin sapUiMediumMarginEnd sapUiTinyMarginTopBottom"
+                                width="auto"
+                                visible="{= ${device>/system/phone} ? false : true}"
+                            />
+                            <Bar
+                                visible="{= ${device>/system/phone} ? true : false}"
+                            >
+                                <contentLeft>
+                                    <Button
+                                        icon="sap-icon://slim-arrow-left"
+                                        press="onNavButtonMainPage"
+                                        visible="{controls>/shownavbuttonMain}"
+                                    />
+                                </contentLeft>
+                                <contentRight>
+                                    <core:Icon
+                                        src="{path:'controls>/overallWeekStatus', formatter:'.formatter.IconDisplay'}"
+                                        color="{path:'controls>/overallWeekStatus', formatter:'.formatter.colorDisplay'}"
+                                    />
+                                </contentRight>
+                            </Bar>
+                            <u:CalendarDateInterval
+                                id="calendardateintervalp"
+                                width="100%"
+                                legend="legend1"
+                                class="sapUiTinyMarginTop"
+                                startDateChange="onStartDateChange"
+                                minDate="{path:'TimeEntries>/0/mindate',formatter:'.formatter.getUTCDate'}"
+                                pickerPopup="true"
+                                maxDate="{path:'TimeEntries>/0/CaleNavMaxDate',formatter:'.formatter.getUTCDate'}"
+                                visible="{= ${device>/system/phone} ? true : false}"
+                            />
+                            <u:CalendarLegend
+                                id="legend1"
+                                visible="{= ${device>/system/phone} ? true : false}"
+                            >
+                                <u:items>
+                                    <u:CalendarLegendItem
+                                        text="{i18n>timeCompleted}"
+                                        type="Type08"
+                                        color="#667C26"
+                                    />
+                                    <u:CalendarLegendItem
+                                        text="{i18n>timeMissing}"
+                                        type="Type01"
+                                        color="#FFA500"
+                                    />
+                                    <!--<u:CalendarLegendItem text="{i18n>timeMissing}" type="Type01"/>-->
+                                    <u:CalendarLegendItem
+                                        text="{i18n>timeRejected}"
+                                        type="Type03"
+                                        color="#F62217"
+                                    />
+                                    <u:CalendarLegendItem
+                                        text="{i18n>submitted}"
+                                        type="Type04"
+                                        color="#A7C7E7"
+                                    />
+                                    <!--<u:CalendarLegendItem text="{i18n>submitted}" type="Type16" color="#A7C7E7"/>-->
+                                    <u:CalendarLegendItem
+                                        text="{i18n>InProcess}"
+                                        type="Type09"
+                                        color="#FFFF00"
+                                    />
+                                </u:items>
+                            </u:CalendarLegend>
+                            <!--	</sap.ui.layout:content>-->
+                            <!--</sap.ui.layout:Grid>-->
+                        </sap.ui.layout:fixContent>
+                        <sap.ui.layout:flexContent>
+                            <ScrollContainer
+                                vertical="true"
+                                height="100%"
+                                focusable="true"
+                                class="sapUiNoMarginTop"
+                            >
+                                <content>
+                                    <VBox
+                                        visible="{controls>/flexContentProjects}"
+                                    >
+                                        <Panel
+                                            expandable="true"
+                                            expanded="false"
+                                        >
+                                            <headerToolbar>
+                                                <Toolbar>
+                                                    <Title
+                                                        text="{i18n>projects}"
+                                                    />
+                                                    <ToolbarSpacer />
+                                                    <!--<Button text="{i18n>missingProject}" press="onCreateMissingProject"/>
+													<Text text="{path:'controls>/worklistCount'}"/>-->
+                                                </Toolbar>
+                                            </headerToolbar>
+                                            <SearchField
+                                                liveChange=".onSearch"
+                                                width="90%"
+                                            />
+                                            <List
+                                                items="{path: 'Worklist>/'}"
+                                                growing="true"
+                                                growingScrollToLoad="false"
+                                                growingThreshold="5"
+                                                id="mobWorkList"
+                                            >
+                                                <CustomListItem
+                                                    press="onWorkListTypePress"
+                                                    type="Active"
+                                                >
+                                                    <HBox>
+                                                        <FlexBox
+                                                            alignItems="Start"
+                                                            justifyContent="SpaceBetween"
+                                                        >
+                                                            <Text
+                                                                text="{Worklist>WorkListDataFields/ZPOSIDTEXT}"
+                                                                class="sapUiTinyMarginTopBottom"
+                                                            />
+                                                            <!--<Button icon="sap-icon://add" press="onAddWorkPackageTimeEntries"/>-->
+                                                        </FlexBox>
+                                                    </HBox>
+                                                </CustomListItem>
+                                                <!--<StandardListItem title="{Worklist>WorkListDataFields/ZPOSIDTEXT}" iconDensityAware="false" iconInset="false" press="onWorkListTypePress"/>-->
+                                            </List>
+                                        </Panel>
+                                        <Panel
+                                            expandable="true"
+                                            expanded="false"
+                                            visible="false"
+                                        >
+                                            <headerToolbar>
+                                                <Toolbar>
+                                                    <Title
+                                                        text="{i18n>admintime}"
+                                                    />
+                                                    <ToolbarSpacer />
+                                                    <Text
+                                                        text="{path:'controls>/AdminTypeCount'}"
+                                                    />
+                                                </Toolbar>
+                                            </headerToolbar>
+                                            <List
+                                                items="{path: 'AdminTypeData>/'}"
+                                                growing="true"
+                                                growingScrollToLoad="true"
+                                                growingThreshold="5"
+                                                itemPress="onAdminTypePress"
+                                                swipe="onSwipeAdminTypes"
+                                            >
+                                                <swipeContent>
+                                                    <Button
+                                                        icon="sap-icon://accept"
+                                                    />
+                                                </swipeContent>
+                                                <StandardListItem
+                                                    title="{AdminTypeData>Atext}"
+                                                    description="{AdminTypeData>Awart}"
+                                                    iconDensityAware="false"
+                                                    iconInset="false"
+                                                    type="Navigation"
+                                                />
+                                            </List>
+                                        </Panel>
+                                    </VBox>
+                                    <Panel
+                                        expandable="true"
+                                        expanded="true"
+                                        class="sapUiNoMarginTop"
+                                        width="auto"
+                                    >
+                                        <headerToolbar>
+                                            <OverflowToolbar>
+                                                <Title
+                                                    text="{= ${device>/system/phone} ? 'Project Time Summary' : 'Project Time'}"
+                                                />
+                                                <Button
+                                                    id="Add_Assignment"
+                                                    text=""
+                                                    icon="sap-icon://add"
+                                                    iconFirst="true"
+                                                    width="auto"
+                                                    class="cclass"
+                                                    enabled="true"
+                                                    press="onAddAssignmentMultiWbs"
+                                                    visible="{= ${device>/system/phone} ? false : true}"
+                                                    tooltip="{i18n>selectwp}"
+                                                />
+                                                <ToolbarSpacer />
+                                                <!--<Button
+                                                    text="{i18n>copyweek}"
+                                                    visible="{path: 'controls>/prevWeekBut',formatter:'.formatter.copyButtonVisible'}"
+                                                    press="onCopyPreviousWeek"
+                                                    type="Emphasized"
+                                                    icon="sap-icon://copy"
+                                                    tooltip="{i18n>copyweek}"
+                                                />-->
+                                                 <Button
+                                                    text="{i18n>copyweek}"
+                                                    visible="{path: 'controls>/prevWeekBut',formatter:'.formatter.copyButtonVisible'}"
+                                                    press="onCopyPreviousWeek"
+                                                    type="Emphasized"
+                                                    icon="sap-icon://copy"
+                                                    tooltip="{i18n>copyweek}"
+                                                /> 
+                                            </OverflowToolbar>
+                                        </headerToolbar>
+                                        <Table
+                                            id="ENTRY_LIST_CONTENTS"
+                                            mode="SingleSelectMaster"
+                                            visible="{= ${device>/system/phone} ? false : true}"
+                                        />
+                                        <Table
+                                            id="ENTRY_LIST_CONTENTS_Phone"
+                                            visible="{= ${device>/system/phone} ? true : false}"
+                                            noDataText="{i18n>noDataText}"
+                                            items="{path:'aTableRows>/',templateShareable:true}"
+                                            showUnread="false"
+                                            itemPress="onMainTimeEntriesItemPress"
+                                            swipe="onSwipeMainTimeEntries"
+                                        >
+                                            <swipeContent>
+                                                <Button
+                                                    icon="sap-icon://accept"
+                                                />
+                                            </swipeContent>
+                                            <columns>
+                                                <Column
+                                                    hAlign="Begin"
+                                                    width="13rem"
+                                                >
+                                                    <Text
+                                                        text="{i18n>cost_assignment}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    demandPopin="true"
+                                                    hAlign="Center"
+                                                >
+                                                    <Text
+                                                        text="{i18n>actions}"
+                                                    />
+                                                </Column>
+            			<!-- Location/Timecategory hide/disable/mandatory                                     -->
+                                                <Column  visible="{controls>/columnLocationVisibility}"
+                                                    demandPopin="true"
+                                                    minScreenWidth="Tablet"
+                                                > 
+                                                <!-- visible="{controls>/columnLocationVisibility}" -->
+                                                    <Text
+                                                        text="{i18n>location}"
+                                                    />
+                                                </Column>
+                                                <Column visible="{controls>/columnTimeCategoryVisibility}"
+                                                    demandPopin="true"
+                                                    minScreenWidth="Tablet"
+                                                >
+                                                <!-- visible="{controls>/columnTimeCategoryVisibility}" -->
+                                                    <Text
+                                                        text="{i18n>timeCategory}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    demandPopin="true"
+                                                    minScreenWidth="Tablet"
+                                                >
+                                                    <Text text="{i18n>total}" />
+                                                </Column>
+                                                <Column visible="false">
+                                                    <Text
+                                                        text="{i18n>wbsName}"
+                                                    />
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem
+                                                    type="Navigation"
+                                                >
+                                                    <cells>
+                                                        <ObjectIdentifier
+                                                            title="{aTableRows>posidtitle}"
+                                                            titleActive="true"
+                                                        />
+                                                        <Button
+                                                            icon="sap-icon://delete"
+                                                            enabled="{path: 'aTableRows>overallWeekStatus',formatter:'.formatter.buttonEnableMain'}"
+                                                            press="performDeleteRowPhone"
+                                                        />
+                                                        <!--<ObjectIdentifier title="{aTableRows>wrkloc}"/>
 														<ObjectIdentifier title="{aTableRows>timecat}"/>-->
-														<ComboBox items="{ path: 'AvlWorkLocations>/' }" selectedKey="{aTableRows>wrkloc}" enabled="false">
-															<core:Item key="{AvlWorkLocations>OBJID}" text="{AvlWorkLocations>STEXT}"/>
-														</ComboBox>
-														<ComboBox items="{ path: 'AvlTimeCategories>/' }" selectedKey="{aTableRows>timecat}" enabled="false">
-															<core:Item key="{AvlTimeCategories>TIME_CAT}" text="{AvlTimeCategories>DESCRIPTION}"/>
-														</ComboBox>
-														<Text text="{aTableRows>totalweekcatsEntered}"/>
-														<!--<Button icon="sap-icon://delete" enabled="{=${aTableRows>overallWeekStatus === true} ? false : true}"/>-->
-													</cells>
-												</ColumnListItem>
-											</items>
-										</Table>
-										<FlexBox alignItems="Start" justifyContent="SpaceBetween" visible="{= ${device>/system/phone} ? true : false}">
-											<Text text="{i18n>totalPayHrs}" class="sapUiTinyMarginBegin sapUiTinyMarginTop"/>
-											<Text text="{aTableRowsHours>/0/text}" class="sapUiTinyMarginTop sapUiLargeMarginEnd"/>
-										</FlexBox>
-										<Table id="idOverviewTable" growing="true" noDataText="{i18n>noTimeEntries}" selectionChange="onOverviewSelect" growingThreshold="50"
-											mode="{controls>/onEdit}" headerText="{i18n>timesheetRecords}" visible="{= ${device>/system/phone} ? false : false}"
-											items="{path:'TimeData>/', sorter: [{ path: 'HeaderData', descending:false, group: true},{ path: 'TimeEntryDataFields/WORKDATE', descending:false, group: true}],groupHeaderFactory: '.getGroupHeader'}"
-											delete="onDelete" enableBusyIndicator="true">
-											<headerToolbar>
-												<OverflowToolbar id="idOverflow">
-													<ObjectIdentifier id="idmissinghours" text="" visible="{= ${device>/system/phone} ? true : false}"/>
-													<ToolbarSpacer/>
-													<Button id="editButton" text="{i18n>enterRecords}" tooltip="{i18n>enterRecords}" type="Transparent" press="onEdit"
-														visible="{controls>/overviewEdit}" enabled="{controls>/overviewEditEnabled}"/>
-													<Button icon="sap-icon://action-settings" press="onPersButtonPressed" enabled="{controls>/overviewEditEnabled}"/>
-												</OverflowToolbar>
-											</headerToolbar>
-											<columns>
-												<Column mergeDuplicates="true" id="entered" minScreenWidth="Tablet" demandPopin="true" visible="{= ${device>/system/phone} ? true : false}">
-													<Text text="{parts:['i18n>record','i18n>recorded','i18n>target'],formatter: 'jQuery.sap.formatMessage'}"/>
-												</Column>
-												<Column width="{= ${device>/system/phone} ? '70%' : '20%'}" id="assignment" hAlign="Begin">
-													<Text text="{i18n>assign}"/>
-												</Column>
-												<Column id="hours" minScreenWidth="Tablet" demandPopin="true" hAlign="End">
-													<Text text="{i18n>enteredColumn}"/>
-												</Column>
-												<Column id="draft" width="{= ${device>/system/phone} ? '' : '5%'}" hAlign="Center" minScreenWidth="Tablet" demandPopin="true"
-													visible="{controls>/submitDraft}">
-													<Text text="{i18n>markAsDraft}"/>
-												</Column>
-												<Column id="startTime" hAlign="End" visible="{=${controls>/clockTimeVisible} ? true:false}" minScreenWidth="Tablet" demandPopin="true">
-													<Text text="{i18n>startTime}"/>
-												</Column>
-												<Column id="endTime" hAlign="End" visible="{=${controls>/clockTimeVisible} ? true:false}" minScreenWidth="Tablet" demandPopin="true">
-													<Text text="{i18n>endTime}"/>
-												</Column>
-												<Column id="status" minScreenWidth="Tablet" demandPopin="true" hAlign="Center">
-													<Text text="{i18n>status}"/>
-												</Column>
-												<Column id="comments" minScreenWidth="Tablet" hAlign="Center" demandPopin="true">
-													<Text text="{i18n>comments}"/>
-												</Column>
-												<Column id="editDelete" hAlign="{= ${device>/system/phone} ? 'End' : 'Begin'}">
-													<Text text="{i18n>addDelete}" visible="false"/>
-												</Column>
-											</columns>
-											<items>
-												<ColumnListItem type="Detail" highlight="Information">
-													<cells>
-														<ObjectStatus
-															text="{parts:[{path:'TimeData>totalHours', type: 'sap.ui.model.odata.type.Decimal', formatOptions: { parseAsString: true, decimals: 2, maxFractionDigits: 2, minFractionDigits: 0 }, constraints: { precision: 4, scale: 2, minimum: '0', maximum: '10000' }},{path:'TimeData>target', type: 'sap.ui.model.odata.type.Decimal', formatOptions: { parseAsString: true, decimals: 2, maxFractionDigits: 2, minFractionDigits: 0 }, constraints: { precision: 4, scale: 2, minimum: '0', maximum: '10000' }}], formatter:'.formatter.concatStrings'}"/>
-														<Link
-															text="{parts:[{path:'TimeData>AssignmentName'},{path:'TimeData>AssignmentId'},{path:'TimeData>Counter'}],formatter:'.formatter.assignmentName'}"
-															press="onAssignmentQuickView"/>
-														<ObjectNumber
-															number="{parts:[{path:'TimeData>TimeEntryDataFields/CATSHOURS'},{path:'TimeData>TimeEntryDataFields/CATSQUANTITY'},{path:'TimeData>TimeEntryDataFields/CATSAMOUNT'}],formatter: '.formatter.calHoursQuanAmount'}"
-															class="sapUiSmallMarginBottom"
-															unit="{parts:[{path:'TimeData>TimeEntryDataFields/UNIT'},{path:'TimeData>TimeEntryDataFields/CATSHOURS'}],formatter:'.formatter.getUnitTexts'}"/>
-														<CheckBox select="onCheckboxSelection" visible="{controls>/submitDraft}"/>
-														<ObjectIdentifier visible="{=${controls>/clockTimeVisible == true} ? true:false}" text="{TimeData>TimeEntryDataFields/BEGUZ}"/>
-														<ObjectIdentifier visible="{=${controls>/clockTimeVisible == true} ? true:false}" text="{TimeData>TimeEntryDataFields/ENDUZ}"/>
-														<ObjectStatus text="{path:'TimeData>TimeEntryDataFields/STATUS', formatter:'.formatter.status'}"
-															state="{path:'TimeData>TimeEntryDataFields/STATUS', formatter:'.formatter.state'}"/>
-														<Button icon="sap-icon://notification-2" type="Transparent"
-															visible="{path:'TimeData>TimeEntryDataFields/LONGTEXT', formatter:'.formatter.visibility'}" press="displaylongtextPopover"/>
-													</cells>
-												</ColumnListItem>
-											</items>
-										</Table>
-									</Panel>
-									<!--<Button id="Add_Assignment" iconDensityAware="false" text="" type="Default" icon="sap-icon://add" iconFirst="true" width="auto"-->
-									<!--	enabled="true" visible="true" press="onAddAssignment"/>-->
-									<Panel expandable="true" expanded="false" class="sapUiTinyMarginTop" width="auto">
-										<headerToolbar>
-											<Toolbar>
-												<Title text="{i18n>adminTime}"/>
-												<!--<ToolbarSpacer/>-->
-												<Button id="Add_AdminTime" icon="sap-icon://add" iconFirst="true" width="auto" class="cclass" enabled="true" press="onAddAdminTime"
-													visible="{= ${device>/system/phone} ? false : true}" tooltip="{i18n>adminbuttooltip}"/>
-											</Toolbar>
-										</headerToolbar>
-										<Table id="ENTRY_LIST_ABSENCE" mode="SingleSelectMaster" visible="{= ${device>/system/phone} ? false : true}"></Table>
-										<Table mode="SingleSelectMaster" visible="{= ${device>/system/phone} ? true : false}" items="{path:'aTableRowsAbs>/'}"
-											noDataText="{i18n>noDataText}">
-											<columns>
-												<Column hAlign="Begin" width="14rem">
-													<Text text="{i18n>cost_assignment}"/>
-												</Column>
-												<Column demandPopin="true" hAlign="Center">
-													<Text text="{i18n>total}"/>
-												</Column>
-											</columns>
-											<items>
-												<ColumnListItem>
-													<cells>
-														<Text text="{aTableRowsAbs>posidtitle}"/>
-														<!--<Button icon="sap-icon://delete" enabled="{=${aTableRows>overallWeekStatus === true} ? false : true}"/>-->
-														<Text text="{aTableRowsAbs>totalweekcatsEntered}"/>
-													</cells>
-												</ColumnListItem>
-											</items>
-										</Table>
-									</Panel>
-									<Table visible="{= ${device>/system/phone} ? true : false}" items="{path:'aTableRowsHours>/'}">
-										<columns>
-											<Column hAlign="Begin" width="14rem">
-												<Text text="Summary"/>
-											</Column>
-											<Column demandPopin="true" hAlign="Center">
-												<Text text=""/>
-											</Column>
-										</columns>
-										<items>
-											<ColumnListItem>
-												<cells>
-													<Text text="{aTableRowsHours>key}"/>
-													<!--<Button icon="sap-icon://delete" enabled="{=${aTableRows>overallWeekStatus === true} ? false : true}"/>-->
-													<Text text="{aTableRowsHours>text}"/>
-												</cells>
-											</ColumnListItem>
-										</items>
-									</Table>
-								</content>
-							</ScrollContainer>
-						</sap.ui.layout:flexContent>
-					</sap.ui.layout:FixFlex>
-				</content>
-				<footer>
-					<OverflowToolbar class="sapUiContentPadding">
-						<Button icon="sap-icon://message-popup" text="{message>/length}" type="Emphasized" visible="{= !!${message>/length}}"
-							tooltip="{i18n>messagePopup}" press="handleMessagePopover"/>
-						<Button id="idViewMonth" text="{i18n>viewMonth}" tooltip="{i18n>viewMonth}" press="onViewMonth" type="Default" class="classbutton"/>
-						<ToolbarSpacer/>
-						<Button text="{i18n>addentry}" tooltip="{i18n>addentry}" type="Emphasized" press="onAddTimeEntryPhone" icon="sap-icon://pending"
-							visible="{= ${device>/system/phone} ? true : false}"/>
-						<Button id="idSave" text="{i18n>save}" tooltip="{i18n>save}" type="Transparent" press="onSaveConfirm1" icon="sap-icon://save"
-							visible="{= ${device>/system/phone} ? false : true}" enabled="{controls>/saveEnabled}"/>
-						<Button id="idSubmit" type="Emphasized" text="{i18n>submit} >" tooltip="{i18n>submit}" press="onSendApproval1"
-							icon="sap-icon://time-entry-request" visible="{= ${device>/system/phone} ? false : true}" enabled="{controls>/submitEnabled}"/>
-					</OverflowToolbar>
-				</footer>
-			</Page>
-		</pages>
-	</App>
+                                                        <ComboBox
+                                                            items="{ path: 'AvlWorkLocations>/' }"
+                                                            selectedKey="{aTableRows>wrkloc}"
+                                                            enabled="false"
+                                                        >
+                                                            <core:Item
+                                                                key="{AvlWorkLocations>OBJID}"
+                                                                text="{AvlWorkLocations>STEXT}"
+                                                            />
+                                                        </ComboBox>
+                                                        <ComboBox
+                                                            items="{ path: 'AvlTimeCategories>/' }"
+                                                            selectedKey="{aTableRows>timecat}"
+                                                            enabled="false"
+                                                        >
+                                                            <core:Item
+                                                                key="{AvlTimeCategories>TIME_CAT}"
+                                                                text="{AvlTimeCategories>DESCRIPTION}"
+                                                            />
+                                                        </ComboBox>
+                                                        <Text
+                                                            text="{path:'aTableRows>totalweekcatsEntered', formatter:'.formatter.hoursformat'}"
+                                                        />
+                                                        <Text
+                                                            text="{aTableRows>posid}"
+                                                        />
+                                                        <!--<Button icon=" sap-icon://delete" enabled=" {=${aTableRows>overallWeekStatus === true} ? false : true}"/>-->
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                        <FlexBox
+                                            alignItems="Start"
+                                            justifyContent="SpaceBetween"
+                                            visible="{= ${device>/system/phone} ? true : false}"
+                                        >
+                                            <Text
+                                                text="{i18n>totalPayHrs}"
+                                                class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                                            />
+                                            <Text
+                                                text="{path:'aTableRowsHours>/0/text', formatter:'.formatter.hoursformat'}"
+                                                class="sapUiTinyMarginTop sapUiLargeMarginEnd"
+                                            />
+                                            <!-- <Text
+                                                text="{aTableRowsHours>/0/text}"
+                                                class="sapUiTinyMarginTop sapUiLargeMarginEnd"
+                                            /> -->
+                                        </FlexBox>
+                                        <Table
+                                            id="idOverviewTable"
+                                            growing="true"
+                                            noDataText="{i18n>noTimeEntries}"
+                                            selectionChange="onOverviewSelect"
+                                            growingThreshold="50"
+                                            mode="{controls>/onEdit}"
+                                            headerText="{i18n>timesheetRecords}"
+                                            visible="{= ${device>/system/phone} ? false : false}"
+                                            items="{path:'TimeData>/', sorter: [{ path: 'HeaderData', descending:false, group: true},{ path: 'TimeEntryDataFields/WORKDATE', descending:false, group: true}],groupHeaderFactory: '.getGroupHeader'}"
+                                            delete="onDelete"
+                                            enableBusyIndicator="true"
+                                        >
+                                            <headerToolbar>
+                                                <OverflowToolbar
+                                                    id="idOverflow"
+                                                >
+                                                    <ObjectIdentifier
+                                                        id="idmissinghours"
+                                                        text=""
+                                                        visible="{= ${device>/system/phone} ? true : false}"
+                                                    />
+                                                    <ToolbarSpacer />
+                                                    <Button
+                                                        id="editButton"
+                                                        text="{i18n>enterRecords}"
+                                                        tooltip="{i18n>enterRecords}"
+                                                        type="Transparent"
+                                                        press="onEdit"
+                                                        visible="{controls>/overviewEdit}"
+                                                        enabled="{controls>/overviewEditEnabled}"
+                                                    />
+                                                    <Button
+                                                        icon="sap-icon://action-settings"
+                                                        press="onPersButtonPressed"
+                                                        enabled="{controls>/overviewEditEnabled}"
+                                                    />
+                                                </OverflowToolbar>
+                                            </headerToolbar>
+                                            <columns>
+                                                <Column
+                                                    mergeDuplicates="true"
+                                                    id="entered"
+                                                    minScreenWidth="Tablet"
+                                                    demandPopin="true"
+                                                    visible="{= ${device>/system/phone} ? true : false}"
+                                                >
+                                                    <Text
+                                                        text="{parts:['i18n>record','i18n>recorded','i18n>target'],formatter: 'jQuery.sap.formatMessage'}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    width="{= ${device>/system/phone} ? '70%' : '20%'}"
+                                                    id="assignment"
+                                                    hAlign="Begin"
+                                                >
+                                                    <Text
+                                                        text="{i18n>assign}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    id="hours"
+                                                    minScreenWidth="Tablet"
+                                                    demandPopin="true"
+                                                    hAlign="End"
+                                                >
+                                                    <Text
+                                                        text="{i18n>enteredColumn}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    id="draft"
+                                                    width="{= ${device>/system/phone} ? '' : '5%'}"
+                                                    hAlign="Center"
+                                                    minScreenWidth="Tablet"
+                                                    demandPopin="true"
+                                                    visible="{controls>/submitDraft}"
+                                                >
+                                                    <Text
+                                                        text="{i18n>markAsDraft}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    id="startTime"
+                                                    hAlign="End"
+                                                    visible="{=${controls>/clockTimeVisible} ? true:false}"
+                                                    minScreenWidth="Tablet"
+                                                    demandPopin="true"
+                                                >
+                                                    <Text
+                                                        text="{i18n>startTime}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    id="endTime"
+                                                    hAlign="End"
+                                                    visible="{=${controls>/clockTimeVisible} ? true:false}"
+                                                    minScreenWidth="Tablet"
+                                                    demandPopin="true"
+                                                >
+                                                    <Text
+                                                        text="{i18n>endTime}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    id="status"
+                                                    minScreenWidth="Tablet"
+                                                    demandPopin="true"
+                                                    hAlign="Center"
+                                                >
+                                                    <Text
+                                                        text="{i18n>status}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    id="comments"
+                                                    minScreenWidth="Tablet"
+                                                    hAlign="Center"
+                                                    demandPopin="true"
+                                                >
+                                                    <Text
+                                                        text="{i18n>comments}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    id="editDelete"
+                                                    hAlign="{= ${device>/system/phone} ? 'End' : 'Begin'}"
+                                                >
+                                                    <Text
+                                                        text="{i18n>addDelete}"
+                                                        visible="false"
+                                                    />
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem
+                                                    type="Detail"
+                                                    highlight="Information"
+                                                >
+                                                    <cells>
+                                                        <ObjectStatus
+                                                            text="{parts:[{path:'TimeData>totalHours', type: 'sap.ui.model.odata.type.Decimal', formatOptions: { parseAsString: true, decimals: 2, maxFractionDigits: 2, minFractionDigits: 0 }, constraints: { precision: 4, scale: 2, minimum: '0', maximum: '10000' }},{path:'TimeData>target', type: 'sap.ui.model.odata.type.Decimal', formatOptions: { parseAsString: true, decimals: 2, maxFractionDigits: 2, minFractionDigits: 0 }, constraints: { precision: 4, scale: 2, minimum: '0', maximum: '10000' }}], formatter:'.formatter.concatStrings'}"
+                                                        />
+                                                        <Link
+                                                            text="{parts:[{path:'TimeData>AssignmentName'},{path:'TimeData>AssignmentId'},{path:'TimeData>Counter'}],formatter:'.formatter.assignmentName'}"
+                                                            press="onAssignmentQuickView"
+                                                        />
+                                                        <ObjectNumber
+                                                            number="{parts:[{path:'TimeData>TimeEntryDataFields/CATSHOURS'},{path:'TimeData>TimeEntryDataFields/CATSQUANTITY'},{path:'TimeData>TimeEntryDataFields/CATSAMOUNT'}],formatter: '.formatter.calHoursQuanAmount'}"
+                                                            class="sapUiSmallMarginBottom"
+                                                            unit="{parts:[{path:'TimeData>TimeEntryDataFields/UNIT'},{path:'TimeData>TimeEntryDataFields/CATSHOURS'}],formatter:'.formatter.getUnitTexts'}"
+                                                        />
+                                                        <CheckBox
+                                                            select="onCheckboxSelection"
+                                                            visible="{controls>/submitDraft}"
+                                                        />
+                                                        <ObjectIdentifier
+                                                            visible="{=${controls>/clockTimeVisible == true} ? true:false}"
+                                                            text="{TimeData>TimeEntryDataFields/BEGUZ}"
+                                                        />
+                                                        <ObjectIdentifier
+                                                            visible="{=${controls>/clockTimeVisible == true} ? true:false}"
+                                                            text="{TimeData>TimeEntryDataFields/ENDUZ}"
+                                                        />
+                                                        <ObjectStatus
+                                                            text="{path:'TimeData>TimeEntryDataFields/STATUS', formatter:'.formatter.status'}"
+                                                            state="{path:'TimeData>TimeEntryDataFields/STATUS', formatter:'.formatter.state'}"
+                                                        />
+                                                        <Button
+                                                            icon="sap-icon://notification-2"
+                                                            type="Transparent"
+                                                            visible="{path:'TimeData>TimeEntryDataFields/LONGTEXT', formatter:'.formatter.visibility'}"
+                                                            press="displaylongtextPopover"
+                                                        />
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </Panel>
+                                    <!--<Button id="Add_Assignment" iconDensityAware="false" text="" type="Default" icon="sap-icon://add" iconFirst="true" width="auto"-->
+                                    <!--	enabled="true" visible="true" press="onAddAssignment"/>-->
+                                    <Panel
+                                        expandable="true"
+                                        expanded="false"
+                                        class="sapUiTinyMarginTop"
+                                        width="auto"
+                                        visible="false"
+                                    >
+                                        <headerToolbar>
+                                            <Toolbar>
+                                                <Title
+                                                    text="{i18n>adminTime}"
+                                                />
+                                                <!--<ToolbarSpacer/>-->
+                                                <Button
+                                                    id="Add_AdminTime"
+                                                    icon="sap-icon://add"
+                                                    iconFirst="true"
+                                                    width="auto"
+                                                    class="cclass"
+                                                    enabled="true"
+                                                    press="onAddAdminTime"
+                                                    visible="{= ${device>/system/phone} ? false : true}"
+                                                    tooltip="{i18n>adminbuttooltip}"
+                                                />
+                                            </Toolbar>
+                                        </headerToolbar>
+                                        <Table
+                                            id="ENTRY_LIST_ABSENCE"
+                                            mode="SingleSelectMaster"
+                                            visible="{= ${device>/system/phone} ? false : true}"
+                                        />
+                                        <Table
+                                            mode="SingleSelectMaster"
+                                            visible="{= ${device>/system/phone} ? true : false}"
+                                            items="{path:'aTableRowsAbs>/'}"
+                                            noDataText="{i18n>noDataText}"
+                                        >
+                                            <columns>
+                                                <Column
+                                                    hAlign="Begin"
+                                                    width="14rem"
+                                                >
+                                                    <Text
+                                                        text="{i18n>cost_assignment}"
+                                                    />
+                                                </Column>
+                                                <Column
+                                                    demandPopin="true"
+                                                    hAlign="Center"
+                                                >
+                                                    <Text text="{i18n>total}" />
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <cells>
+                                                        <Text
+                                                            text="{aTableRowsAbs>posidtitle}"
+                                                        />
+                                                        <!--<Button icon="sap-icon://delete" enabled="{=${aTableRows>overallWeekStatus === true} ? false : true}"/>-->
+                                                        <Text
+                                                            text="{aTableRowsAbs>totalweekcatsEntered}"
+                                                        />
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                    </Panel>
+                                    <Table
+                                        visible="{= ${device>/system/phone} ? true : false}"
+                                        items="{path:'aTableRowsHours>/'}"
+                                    >
+                                        <columns>
+                                            <Column
+                                                hAlign="Begin"
+                                                width="14rem"
+                                            >
+                                                <Text text="{i18n>summary}" />
+                                            </Column>
+                                            <Column
+                                                demandPopin="true"
+                                                hAlign="Center"
+                                            >
+                                                <Text text="" />
+                                            </Column>
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem>
+                                                <cells>
+                                                    <Text
+                                                        text="{aTableRowsHours>key}"
+                                                    />
+                                                    <!--<Button icon="sap-icon://delete" enabled="{=${aTableRows>overallWeekStatus === true} ? false : true}"/>-->
+                                                    <!-- <Text
+                                                        text="{aTableRowsHours>text}"
+                                                    /> -->
+                                                    <Text
+                                                        text="{path:'aTableRowsHours>text', formatter:'.formatter.hoursformat'}"
+                                                    />
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                </content>
+                            </ScrollContainer>
+                        </sap.ui.layout:flexContent>
+                    </sap.ui.layout:FixFlex>
+                </content>
+                <footer>
+                    <OverflowToolbar class="sapUiContentPadding">
+                        <Button
+                            icon="sap-icon://message-popup"
+                            text="{message>/length}"
+                            type="Emphasized"
+                            visible="{= !!${message>/length}}"
+                            tooltip="{i18n>messagePopup}"
+                            press="handleMessagePopover"
+                        />
+                        <Button
+                            id="idViewMonth"
+                            text="{i18n>viewMonth}"
+                            tooltip="{i18n>viewMonth}"
+                            press="onViewMonth"
+                            type="Default"
+                            class="classbutton"
+                        />
+                         <Button
+                            id="idViewWeeklyHours"
+                            text="{i18n>viewDaily}"
+                            tooltip="{i18n>viewDaily}"
+                            press="onViewDailyHours"
+                            type="Default"
+                            class="classbutton"
+                            visible="{= ${device>/system/phone} ? true : false}"
+                        /> 
+                        <ToolbarSpacer />
+                        <Button
+                            text="{i18n>addentry}"
+                            tooltip="{i18n>addentry}"
+                            type="Emphasized"
+                            press="onAddTimeEntryPhone"
+                            icon="sap-icon://pending"
+                            visible="{= ${device>/system/phone} ? true : false}"
+                        />
+                        <Button
+                            id="idSave"
+                            text="{i18n>save}"
+                            tooltip="{i18n>save}"
+                            type="Transparent"
+                            press="onSaveConfirm1"
+                            icon="sap-icon://save"
+                            visible="{= ${device>/system/phone} ? false : true}"
+                            enabled="{controls>/saveEnabled}"
+                        />
+                        <Button
+                            id="idSubmit"
+                            type="Emphasized"
+                            text="{i18n>submit} >"
+                            tooltip="{i18n>submit}"
+                            press="onSendApproval1"
+                            icon="sap-icon://time-entry-request"
+                            enabled="{controls>/submitEnabled}"
+                        />
+                    </OverflowToolbar>
+                </footer>
+            </Page>
+        </pages>
+    </App>
 </mvc:View>

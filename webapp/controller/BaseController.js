@@ -263,7 +263,7 @@ sap.ui.define([
 			return copiedEntries;
 
 		},
-		onCreateMissingProject1: function (oEvent) {},
+		onCreateMissingProject1: function (oEvent) { },
 		setcalenderinBase: function (oCalendar) {
 			this.mCalendar = oCalendar;
 		},
@@ -276,11 +276,24 @@ sap.ui.define([
 			var oRouter = that.getOwnerComponent().getRouter();
 			var oControl = this.getModel("controls");
 			var submitEntries = this.fetchRecords(true);
+			//			Location/Timecategory hide/disable/mandatory
+			if (!this.getModel("controls").getProperty("/columnTimeCategoryVisibility") ||
+				!this.getModel("controls").getProperty("/columnLocationVisibility")) {
+				submitEntries.forEach(ele => {
+					if (!this.getModel("controls").getProperty("/columnLocationVisibility")) {
+						ele.TimeEntryDataFields.WrkLoc = '';
+					}
+					if (!this.getModel("controls").getProperty("/columnTimeCategoryVisibility")) {
+						ele.TimeEntryDataFields.ProjTimeCat = '';
+					}
+				});
+			}
+			//			Location/Timecategory hide/disable/mandatory				
 			for (var c = 0; c < submitEntries.length; c++) {
 				submitEntries[c].RecRowNo = (c + 1).toString();
 				if ((submitEntries[c].TimeEntryDataFields.CATSHOURS == 0 || submitEntries[c].TimeEntryDataFields.CATSHOURS == "0.00") && (
-						submitEntries[c].TimeEntryDataFields.CATSAMOUNT == 0) && (
-						submitEntries[c].TimeEntryDataFields.CATSQUANTITY == 0) ||
+					submitEntries[c].TimeEntryDataFields.CATSAMOUNT == 0) && (
+						submitEntries[c].TimeEntryDataFields.CATSQUANTITY == 0) && (submitEntries[c].TimeEntryDataFields.STATUS !== "10") ||
 					(submitEntries[c].TimeEntryDataFields.STATUS === "99")) {
 					submitEntries.splice(c, 1);
 					//If start time and end time are also not specified then do not consider record for submit
@@ -306,7 +319,7 @@ sap.ui.define([
 						if (submitEntries.length === 0) {
 							that.busyDialog.close();
 							//	that.hideBusy(true);
-							var toastMsg = that.oBundle.getText("noEntriesToSubmit");
+							var toastMsg = that.getResourceBundle().getText("noEntriesToSubmit");
 							sap.m.MessageToast.show(toastMsg, {
 								duration: 3000
 							});
@@ -467,7 +480,7 @@ sap.ui.define([
 								that.setModel(oModel1, 'deleteRecords');
 								that.setModel(oModel1, 'changedRecords');
 								that.setModel(oModel1, 'newRecords');
-								if (sap.ui.Device.system.phone === true && rowDelete !== "COPYENTRYDEL") {
+								if (sap.ui.Device.system.phone === true && rowDelete === undefined) {
 									oControl.setProperty("/overviewEdit", true);
 									oControl.setProperty("/overviewCancel", false);
 									oControl.setProperty("/submitDraft", false);
@@ -480,11 +493,18 @@ sap.ui.define([
 									oControl.setProperty("/isOverviewChanged", false);
 									that.setModel(oControl, "controls");
 									oRouter.navTo("default", {});
-
+								} else if (sap.ui.Device.system.phone === true && rowDelete === "Submit") {
+									var oDate = new Date(that.mCalendar.getStartDate());
+									that.startdate = that.getFirstDayOfWeek(oDate, 0);
+									that.enddate = that.getLastDayOfWeek(oDate, 0);
+									that.getTimeEntries(that.startdate, that.enddate);
 								} else if (sap.ui.Device.system.phone === true && rowDelete === "COPYENTRYDEL") {
 									var oDate = new Date(that.mCalendar.getStartDate());
 									that.startdate = that.getFirstDayOfWeek(oDate, 0);
 									that.enddate = that.getLastDayOfWeek(oDate, 0);
+									// Added this for Copy Previous Week entries as part of CTS-57
+									that.deleteCopiedEntriesModel();
+									// Added this for Copy Previous Week entries as part of CTS-57
 									that.getTimeEntries(that.startdate, that.enddate);
 								} else {
 									oControl.setProperty('/isDataChanged', false);
@@ -525,6 +545,7 @@ sap.ui.define([
 			var oWorkListModel = this.getModel("Worklist");
 			var aWorkListData = oWorkListModel.getData();
 			var entries = this.getModel('TimeData').getData();
+			var currCatsHours;
 
 			for (var i = 0; i < aTableArray.length; i++) {
 				var aRow = aWorkListData.find(function (entry, id) {
@@ -538,11 +559,26 @@ sap.ui.define([
 					aTableArray[i]["posidtitle"] = aTableArray[i].posid;
 				}
 				for (var j = 0; j < aTableArray[i].rowsdata.length; j++) {
+					if (aTableArray[i].rowsdata[j].ProjTimeCat !== "" && aTableArray[i].rowsdata[j].ProjTimeCat !== undefined) {
+						aTableArray[i]["timecat"] = aTableArray[i].rowsdata[j].ProjTimeCat;
+					}
+					if (aTableArray[i].rowsdata[j].WrkLoc !== "" && aTableArray[i].rowsdata[j].WrkLoc !== undefined) {
+						aTableArray[i]["wrkloc"] = aTableArray[i].rowsdata[j].WrkLoc;
+					}
 					if (aTableArray[i].rowsdata[j].CATSHOURS !== "") {
-						totalEnteredHoursWeek = totalEnteredHoursWeek + parseFloat(aTableArray[i].rowsdata[j].CATSHOURS);
+						// currCatsHours = parseFloat(aTableArray[i].rowsdata[j].CATSHOURS.split(":")[0] + "." + aTableArray[i].rowsdata[j].CATSHOURS.split(
+						// 	":")[1]);
+						currCatsHours = this.timeToDecimal(aTableArray[i].rowsdata[j].CATSHOURS);
+						totalEnteredHoursWeek = totalEnteredHoursWeek + currCatsHours;
 					}
 				}
-				aTableArray[i]["totalweekcatsEntered"] = parseFloat(totalEnteredHoursWeek).toFixed(2);
+				if (sap.ui.Device.system.phone === true) {
+					//aTableArray[i]["totalweekcatsEntered"] = this.mobileAdjustTime(totalEnteredHoursWeek);
+					aTableArray[i]["totalweekcatsEntered"] = this.formatMobileTime(totalEnteredHoursWeek);
+				} else {
+					aTableArray[i]["totalweekcatsEntered"] = parseFloat(totalEnteredHoursWeek).toFixed(2);
+				}
+
 				for (var k = 0; k < aTableArray[i].rowsdata.length; k++) {
 					if (aTableArray[i].rowsdata[k].DayStatus === "DONE") {
 						bApprovedEntryFound = true;
@@ -767,7 +803,25 @@ sap.ui.define([
 				isDataChanged: false,
 				saveEnabled: true,
 				submitEnabled: true,
-				createProjectSwitch: false
+				createProjectSwitch: false,
+				//			Location/Timecategory hide/disable/mandatory				
+				columnLocationVisibility: false,
+				columnLocationEnabled: false,
+				columnLocationMandatory: false,
+				columnTimeCategoryVisibility: false,
+				columnTimeCategoryEnabled: false,
+				columnTimeCategoryMandatory: false,
+				changeReasonVisibility: false,
+				changeReasonEnabled: false,
+				changeReasonMandatory: false,
+				commentsVisibility: false,
+				commentsEnabled: false,
+				commentsMandatory: false,
+				//			Location/Timecategory hide/disable/mandatory
+				// Added as part of CTS-57
+				copiedDelPosID: "",
+				totalDayHours: 0
+
 			};
 			this.getModel("controls").setData(odata);
 		},
@@ -859,6 +913,32 @@ sap.ui.define([
 			}
 			return timeString;
 		},
+		formatMobileTime: function (oTime) {
+			var timeString; //NOTE 2356935
+			/**
+			 * @ControllerHook Modify the format of the time
+			 * This hook method can be used to chnage the format of the time from HH:MM to decimals
+			 * It is called while it is changing the format.
+			 * @callback hcm.mytimesheet.view.S3~extHookChangeFormatTime
+			 * @param {object}  Object
+			 * @return {object} Object
+			 */
+			if (this.extHookChangeFormatTime) {
+				timeString = this.extHookChangeFormatTime(oTime); //NOTE 2408036
+			} else {
+				var mins = oTime * 60;
+				var h = Math.floor(mins / 60).toString();
+				if (h.length === 1) {
+					h = "0" + h;
+				}
+				var m = (mins % 60).toFixed(0);
+				if (m.length === 1) {
+					m = "0" + m;
+				}
+				timeString = h + "." + m;
+			}
+			return timeString;
+		},
 		timeToDecimal1: function (oTime) {
 			var arr = oTime.split('.');
 			if (arr[0] === "") {
@@ -887,6 +967,20 @@ sap.ui.define([
 			return parseFloat(hrs + mins);
 			//return parseFloat(parseInt(arr[0], 10) + '.' + parseInt((arr[1] / 6) * 10, 10));
 		},
+		timeToDecimal2: function (oTime) {
+			var arr = oTime.split(':');
+			if (arr[0] === "") {
+				arr[0] = 0; // - to handle :45 scenerio, where no value is present befor :
+			}
+			//45 minutes is 45 minutes * (1 hour / 60 minutes) = 45/60 hours = 0.75 hours
+			var hrs = parseInt(arr[0], 10);
+			var mins = 0;
+			if (arr.length > 1) {
+				mins = parseFloat((arr[1]) * (1 / 100));
+			}
+			return parseFloat(hrs + mins);
+			//return parseFloat(parseInt(arr[0], 10) + '.' + parseInt((arr[1] / 6) * 10, 10));
+		},
 		adjustTime: function (val) {
 			var returnVal = val;
 			if (returnVal === "") {
@@ -896,6 +990,32 @@ sap.ui.define([
 			}
 			returnVal = parseFloat(returnVal, 10);
 			returnVal = this.formatTime(returnVal.toFixed(2));
+
+			return returnVal;
+		},
+		mobileTimeToDecimal: function (oTime) {
+			var arr = oTime.toString().split('.');
+			if (arr[0] === "") {
+				arr[0] = 0; // - to handle :45 scenerio, where no value is present befor :
+			}
+			//45 minutes is 45 minutes * (1 hour / 60 minutes) = 45/60 hours = 0.75 hours
+			var hrs = parseInt(arr[0], 10);
+			var mins = 0;
+			if (arr.length > 1) {
+				mins = parseFloat((arr[1]) * (1 / 60));
+			}
+			return parseFloat(hrs + mins);
+			//return parseFloat(parseInt(arr[0], 10) + '.' + parseInt((arr[1] / 6) * 10, 10));
+		},
+		mobileAdjustTime: function (val) {
+			var returnVal = val;
+			if (returnVal === "") {
+				returnVal = "0";
+			} else {
+				returnVal = this.mobileTimeToDecimal(returnVal);
+			}
+			returnVal = parseFloat(returnVal, 10);
+			returnVal = this.formatMobileTime(returnVal.toFixed(2));
 
 			return returnVal;
 		},
@@ -1075,8 +1195,56 @@ sap.ui.define([
 		},
 		getErrorHandler: function () {
 			return this._getComponent().errorHandler;
-		}
+		},
+		// check Comments/Reason Mandatory or not in time entries		
+		getComReasonMandatory: function (wbsValue, status) {
+			let bCheckMandate = {
+				Comments: false,
+				ChReason: false
+			};
+			let bConfigWbsCmntMndt;
+			let bConfigCommentVisible = this.getModel("controls").getProperty("/commentsVisibility");
+			let bConfigCommentMandate = this.getModel("controls").getProperty("/commentsMandatory");
+			let bChReasonMandate = this.getModel("controls").getProperty("/changeReasonVisibility") && this.getModel("controls").getProperty("/changeReasonMandatory");
+			let aWorkListData = this.getModel("Worklist").getData();
+			let aRowConfigCommentMandate;
+			if (bChReasonMandate && (status === '30' || status === '40')) {
+				bCheckMandate.ChReason = true;
+			}
+			aRowConfigCommentMandate = aWorkListData.find(function (entry, id) {
+				return entry.WorkListDataFields.POSID === wbsValue;
+			});
+			if (aRowConfigCommentMandate) {
+				bConfigWbsCmntMndt = aRowConfigCommentMandate.WorkListDataFields.Comments;
+			}
+			if (bConfigCommentVisible && (bConfigCommentMandate || bConfigWbsCmntMndt === 'X' || status === '30')) {
+				bCheckMandate.Comments = true;
+			}
+			return bCheckMandate;
+		},
 
+		// Added this function for Copy Previous Week entries as part of CTS-57
+		deleteCopiedEntriesModel: function () {
+			let aPLT = this.getModel("controls").getProperty("/copiedDelPosID");
+			if (aPLT) {
+				let posID = aPLT.split(",")[0];
+				let wrkloc = aPLT.split(",")[1];
+				let timeCat = aPLT.split(",")[2];
+
+				if (this.getModel("TimeEntriesCopy")?.getData()?.length) {
+					let aCopiedEntries = this.getModel("TimeEntriesCopy").getData();
+					for (let i = 0; i < aCopiedEntries.length; i++) {
+						aCopiedEntries[i].TimeEntries.results.forEach((row,idx) => {
+							if (row.TimeEntryDataFields.POSID === posID) {
+								aCopiedEntries[i].TimeEntries.results.splice(idx, 1);
+							}
+						});
+					}
+				}
+
+			}
+		}
+		// Added this function for Copy Previous Week entries as part of CTS-57
 	});
 
 });

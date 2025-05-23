@@ -5,9 +5,10 @@
 			<VBox class="sapUiSmallMargin">
 				<Text text="{i18n>workpcktext}"/>
 				<List headerText="" items="{ path: 'WorkPackList>/'}" includeItemInSelection="true" mode="MultiSelect"
-				selectionChange="onWorkPackSelectionChange" itemPress="onWorkPackItemPress">
+					selectionChange="onWorkPackSelectionChange" itemPress="onWorkPackItemPress">
 					<items>
-						<StandardListItem title="{WorkPackList>WorkListDataFields/Post1}" selected="{WorkPackList>WorkListDataFields/selected}" description="{WorkPackList>WorkListDataFields/POSID}" press="onWorkPackListItemPress"/>
+						<StandardListItem title="{WorkPackList>WorkListDataFields/Post1}" description="{WorkPackList>WorkListDataFields/POSID}"
+							press="onWorkPackListItemPress"/>
 					</items>
 				</List>
 				<Button text="{i18n>missingWP}" press="onRequestMissingWP" visible="{controls>/createProjectSwitch}"/>

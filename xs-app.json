@@ -5,7 +5,7 @@
     {
       "source": "^/sap/(.*)$",
       "target": "/sap/$1",
-      "destination": "SCC_M0D_202",
+      "destination": "M1C-202-PP",
       "authenticationType": "xsuaa",
       "csrfProtection": false
     },

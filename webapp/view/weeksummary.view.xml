@@ -1,0 +1,87 @@
+<mvc:View
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    controllerName="cgdc.timesheet.controller.weeksummary"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:u="sap.ui.unified"
+    xmlns:sap.ui.layout="sap.ui.layout"
+>
+    <App>
+        <pages>
+            <Page
+                id="weeksummarypage"
+                title=""
+                showNavButton="true"
+                navButtonPress="onNavBacktoDetail"
+            >
+                <content>
+                    <u:CalendarDateInterval
+                        id="calendardateintervalmobile"
+                        width="100%"
+                        legend="legend1"
+                        class="sapUiTinyMarginTop"
+                        startDateChange="onStartDateChange"
+                        minDate="{path:'TimeEntries>/0/mindate',formatter:'.formatter.getUTCDate'}"
+                        pickerPopup="true"
+                        maxDate="{path:'TimeEntries>/0/CaleNavMaxDate',formatter:'.formatter.getUTCDate'}"
+                        visible="{= ${device>/system/phone} ? true : false}"
+                        showWeekNumbers="false"
+                        select="handleCalendarSelect"
+                    />
+                    <sap.ui.layout:FixFlex>
+                        <sap.ui.layout:flexContent>
+                            <ScrollContainer
+                                vertical="true"
+                                height="100%"
+                                focusable="true"
+                                class="sapUiNoMarginTop"
+                            >
+                                <content>
+                                    <VBox>
+                                        <List
+                                            headerText="Daily Hours"
+                                            items="{aMobDaySummary>/}"
+                                            growing="true"
+                                            growingScrollToLoad="false"
+                                            growingThreshold="5"
+                                            id="mobWeeklyWorkList"
+                                        >
+                                            <ObjectListItem
+                                                title="{aMobDaySummary>TimeEntryDataFields/POSID}"
+                                                type="Active"
+                                            >
+                                                <firstStatus>
+                                                    <ObjectStatus
+                                                        text="{path: 'aMobDaySummary>TimeEntryDataFields/CATSHOURS', formatter: '.formatter.formatWeekHoursTime'}"
+                                                    />
+                                                </firstStatus>
+                                                <ObjectAttribute
+                                                    text="{path: 'aMobDaySummary>TimeEntryDataFields/WORKDATE', formatter:'.formatter.dateString'}"
+                                                />
+                                            </ObjectListItem>
+                                        </List>
+                                        <FlexBox
+                                            alignItems="Start"
+                                            justifyContent="SpaceBetween"
+                                            id="fbTotalHours"
+                                        >
+                                            <Text
+                                                text="{i18n>totalPayHrs}"
+                                                class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+                                            />
+                                            <Text
+                                                text="{path: 'controls>/totalDayHours', formatter: '.formatter.formatWeekHoursTime'}"
+                                                class="sapUiTinyMarginTop sapUiLargeMarginEnd"
+                                            />
+                                        </FlexBox>
+                                    </VBox>
+                                </content>
+                            </ScrollContainer>
+                        </sap.ui.layout:flexContent>
+                    </sap.ui.layout:FixFlex>
+                </content>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

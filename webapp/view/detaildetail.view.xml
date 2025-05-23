@@ -10,7 +10,7 @@
 								<Text text="{i18n>cost_assignment}"/>
 							</Column>
 							<Column demandPopin="true" hAlign="End">
-								<Text text="Total"/>
+								<Text text="{i18n>total}"/>
 							</Column>
 						</columns>
 						<items>
@@ -22,22 +22,39 @@
 							</ColumnListItem>
 						</items>
 					</Table>
-					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3"
-						labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+					<f:SimpleForm editable="true" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12"
+						adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
 						singleContainerFullSize="false">
 						<f:content>
 							<Label text="{i18n>hours}"/>
-							<StepInput displayValuePrecision="2" step="1" min="0" textAlign="Center" description="Hours"
-							value="{parts:[{path:'aTableRowsday>/CATSHOURS'},{path:'aTableRowsday>/CATSQUANTITY'},{path:'aTableRowsday>/CATSAMOUNT'}],formatter: '.formatter.calHoursQuanAmountInput'}" change="onChangeHoursStep" editable="{path:'aTableRowsday>/STATUS',formatter:'.formatter.buttonEnabled'}" >
-								
-							</StepInput>
-							<Label text="{i18n>note}"/>
-							<TextArea  value="{aTableRowsday>/LONGTEXT_DATA}" editable="{path:'aTableRowsday>/STATUS',formatter:'.formatter.buttonEnabled'}"
-							liveChange="onliveChangelongTextItemDetail"></TextArea>
-						</f:content>
-					</f:SimpleForm>
-				</content>
-			</Page>
-		</pages>
-	</App>
+							<TimePicker
+                                id="TP1"
+                                valueFormat="HH:mm"
+                                displayFormat="HH:mm"
+                                change="onChangeHoursStep"
+                                maskMode="On"
+                                placeholder="Time Picker"
+                                value="{parts:[{path:'aTableRowsday>/CATSHOURS'},{path:'aTableRowsday>/CATSQUANTITY'},{path:'aTableRowsday>/CATSAMOUNT'}],formatter: '.formatter.calHoursQuanAmountInput'}"
+                            />
+							<!-- <StepInput displayValuePrecision="2" step="1" min="0" max="24" textAlign="Center" description="Hours"
+								value="{parts:[{path:'aTableRowsday>/CATSHOURS'},{path:'aTableRowsday>/CATSQUANTITY'},{path:'aTableRowsday>/CATSAMOUNT'}],formatter: '.formatter.calHoursQuanAmountInput'}"
+								change="onChangeHoursStep"
+								></StepInput> -->
+								<!-- editable="{parts:[{path:'aTableRowsday>/STATUS'},{path:'aTableRowsday>/LONGTEXT_DATA'}],formatter:'.formatter.buttonEnabled'}" -->
+							<Label text="{i18n>changeReason}" required="{controls>/changeReasonMandatory}"
+							visible="{=  ${controls>/changeReasonVisibility} === true }"/>
+							<Select id="idMobChReason" width="220px" forceSelection="false" selectedKey="{aTableRowsday>/Chgrs}" enabled="{controls>/changeReasonEnabled}" items="{ path: 'ChangeReason>/'}" change="onChangeData"
+							visible="{= (${aTableRowsday>/STATUS} === '30' || ${aTableRowsday>/STATUS} === '40') &amp;&amp; ${controls>/changeReasonVisibility} === true }">
+								<core:Item key="{ChangeReason>Chgrs}" text="{ChangeReason>Descr}" />
+							</Select>
+							<Label text="{i18n>note}" required="{= ${controls>/commentsMandatory} === true || ${aTableRowsday>/STATUS} === '30' }"/>
+							<TextArea id="idMobComm" value="{aTableRowsday>/LONGTEXT_DATA}" liveChange="onChangeData"></TextArea>
+							<!--<TextArea value="{aTableRowsday>/LONGTEXT_DATA}" editable="{path:'aTableRowsday>/STATUS',formatter:'.formatter.buttonEnabled'}"
+								liveChange="onliveChangelongTextItemDetail"></TextArea>-->
+                        </f:content>
+                    </f:SimpleForm>
+                </content>
+            </Page>
+        </pages>
+    </App>
 </mvc:View>

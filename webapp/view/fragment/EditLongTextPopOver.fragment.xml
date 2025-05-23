@@ -7,7 +7,23 @@
 	xmlns:smartField="sap.ui.comp.smartfield">
 	<Dialog title="{i18n>additionaldetails}" contentWidth="40%" beginButton="Close" class="sapUiContentPadding">
 		<content>
-			<Text text="{i18n>comments}" class="sapMTitle sapMTitleStyleAuto"></Text>
+			<HBox visible="{= ((${TimeData>TimeEntryDataFields/Chgrs} !== undefined &amp;&amp; ${TimeData>TimeEntryDataFields/Chgrs} !== '') || ${TimeData>TimeEntryDataFields/STATUS} === '30' || ${TimeData>TimeEntryDataFields/STATUS} === '40') &amp;&amp; ${controls>/changeReasonVisibility} === true }">
+				<Label text="{i18n>changeReason}" required="{controls>/changeReasonMandatory}"
+					labelFor="idChReason"
+					class="sapUiTinyMarginEnd sapUiTinyMarginTop"/>
+				<Select id="idChReason" width="220px" forceSelection="false" enabled="{controls>/changeReasonEnabled}"
+				items="{ path: 'ChangeReason>/'}" change="onLiveChangeText" selectedKey="{TimeData>TimeEntryDataFields/Chgrs}">
+				<core:Item key="{ChangeReason>Chgrs}" text="{ChangeReason>Descr}" />
+				</Select>
+			</HBox>
+			<VBox visible="{controls>/commentsVisibility}">
+				<!-- required="{controls>/commentsMandatory}" -->
+				<Label text="{i18n>comments}" required="{= ${controls>/commentsMandatory} === true || ${TimeData>TimeEntryDataFields/STATUS} === '30' }"/>
+				<TextArea id="idComments" value="{path:'TimeData>TimeEntryDataFields/LONGTEXT_DATA'}" width="30rem"
+						  liveChange="onLiveChangeText" enabled="{controls>/commentsEnabled}">
+				</TextArea>
+			</VBox>
+			<!--<Text text="{i18n>comments}" class="sapMTitle sapMTitleStyleAuto"></Text>
 			<FeedInput id="feedInput" post="onPost" showIcon="false" class="sapUiSmallMarginTopBottom"
 				enabled="{= ${path:'TimeData>TimeEntryDataFields/LONGTEXT',formatter:'.formatter'} ? false : true}" placeholder=""></FeedInput>
 			<List showSeparators="Inner">
@@ -28,19 +44,19 @@
 			</List>
 			<HBox visible="false">
 				<VBox class="sapUiSmallMargin">
-					<Label text="Work Location"/>
+					<Label text="{i18n>workLocation}"/>
 					<Input id="idWorkLoc" textFormatMode="KeyValue" showSuggestion="true" showValueHelp="true" valueHelpRequest="onWLValueHelpRequest"></Input>
 				</VBox>
 				<VBox class="sapUiSmallMargin">
-					<Label text="Project Time Category"/>
+					<Label text="{i18n>projTC}"/>
 					<ComboBox id="idPTCVH" items="{ path: '/VL_SH_xCGDCxSH_TIME_CAT' }">
-						<core:Item key="{TIME_CAT}" text="{DESCRIPTION}"/>
+						<core:Item key="{TIME_CAT}" text="{i18n>description}"/>
 					</ComboBox>
 				</VBox>
-			</HBox>
+			</HBox>-->
 		</content>
 		<beginButton>
-			<Button text="{i18n>ok}" tooltip="{i18n>ok}" enabled="true" press="handleOk"/>
+			<Button text="{i18n>ok}" tooltip="{i18n>ok}" enabled="false" press="handleOk"/>
 		</beginButton>
 		<endButton>
 			<Button text="{i18n>close}" tooltip="{i18n>close}" press="handleClose"/>

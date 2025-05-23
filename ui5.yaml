@@ -10,9 +10,9 @@ server:
         ignoreCertError: false
         backend:
           - path: /sap
-            url: http://m0d.cognitusconsulting.com:443
+            url: http://m1d:443
             client: "202"
-            destination: SCC_M0D_202
+            destination: M1D-202-PP
         ui5:
           path:
             - /resources

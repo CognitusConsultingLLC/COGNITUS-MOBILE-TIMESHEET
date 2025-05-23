@@ -7,7 +7,7 @@
  <QuickView >
   <QuickViewPage
     header="{i18n>assign}">
-   <QuickViewGroup elements="{ path : 'TimeDataDetail>/', templateShareable : 'true'}">
+   <QuickViewGroup elements="{ path : 'TimeDataDetail>/', templateShareable : true}">
     <QuickViewGroupElement
       label="{TimeDataDetail>label}"
       value="{TimeDataDetail>value}"

@@ -8,7 +8,7 @@
 		placement="Auto"
 		beforeOpen="onBeforeOpenUnifiedCalendar"
 		afterOpen="onAfterOpenUnifiedCalendar">
-		<u:Calendar id="idCalendar" intervalSelection="false" months="1" firstDayOfWeek="1" startDateChange="onStartDateChangeMonth"
+		<u:Calendar id="idCalendar" intervalSelection="false" months="1" firstDayOfWeek="0" startDateChange="onStartDateChangeMonth"
 		select="handleCalendarSelect"/>
 	</ResponsivePopover>
 </core:FragmentDefinition>

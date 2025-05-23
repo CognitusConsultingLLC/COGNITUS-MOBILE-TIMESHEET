@@ -41,25 +41,51 @@ sap.ui.define([
 			//	this.getView().setModel(oModel, "aTableRowsdays");
 			this.busyDialog = new sap.m.BusyDialog();
 			this.oDataModel = this.getOwnerComponent().getModel();
-			this.onGetLocations();
+			//this.onGetLocations();
 			this.onGetTimeCategories();
 			this.isCountrySelected = false;
 			this.isTimeCategorySelect = false;
+			//this.byId("msgTeco").setVisible(false); 
 			this.getOwnerComponent().getRouter().getRoute("detail").attachPatternMatched(this.onRouteMatched, this);
 
 		},
 		onRouteMatched: function (oEvent) {
 			this.iIndex = parseInt(oEvent.getParameters("arguments").arguments.index);
-			var iFrom = oEvent.getParameters("arguments").arguments.from;
+			this.iFrom = oEvent.getParameters("arguments").arguments.from;
 			var aMainData = this.getModel("aTableRowsMain").getData();
+			var tabObj = this.getView().byId("wbsDetails");
+			//making value state to none for loc and time cat
+			tabObj.getItems()[0]?.getCells()[2].setValueState("None");
+			tabObj.getItems()[0]?.getCells()[3].setValueState("None");;
 			if (aMainData.length) {
 				var aArray = [];
 				aArray.push(aMainData[this.iIndex]);
 				this.getModel("aTableRowsdays").setData(aArray);
 				this.getModel("aTableRowsdays").refresh();
-				this.byId("detailpage").setTitle(this.getResourceBundle().getText("detailpagetitle", [this.oFormatddMMyyyy.format(new Date(
-					aMainData[0].rowsdata[6].WORKDATE))]));
+				var aWorkListData = this.getModel("Worklist").getData();
+				var aRow = aWorkListData.find(function (entry, id) {
+					return entry.WorkListDataFields.POSID === aArray[0].posid;
+				});
+				if (aRow) {
+					this.isMandatory = aRow.WrkLocMand === "X" ? true : false;
+					this.oControl.setProperty("/overviewCancel", true);
+					this.oControl.setProperty("/sendForApproval", true);
+				}
+				else {
+					//this.isExist = "";
+					this.oControl.setProperty("/overviewCancel", false);
+					this.oControl.setProperty("/sendForApproval", false);
+				}
+				this.startdate = aMainData[0].rowsdata[0].WORKDATE;
+				var oDetDate = aMainData[0].rowsdata[6].WORKDATE;
+				var oDateFormat = sap.ui.core.format.DateFormat.getDateInstance();
+				this.onGetLocations();
+				this.byId("detailpage").setTitle(this.getResourceBundle().getText("detailpagetitle", [oDateFormat.format(new Date(oDetDate))]));
 				this.bindList(this.iIndex);
+				//this.oControl = this.getOwnerComponent().getModel("controls");
+				//this.oControl.setProperty("/overviewCancel", true);
+				this.oControl.setProperty("/overviewDataChanged", true);
+				//this.oControl.setProperty("/sendForApproval", true);
 			} else {
 				this.Router.navTo("default", {});
 			}
@@ -68,9 +94,12 @@ sap.ui.define([
 			var that = this;
 			var oModel = new sap.ui.model.json.JSONModel();
 			var oDate = this.startdate;
+			var aFilter = [];
+			aFilter.push(new sap.ui.model.Filter("WRK_DATE", sap.ui.model.FilterOperator.EQ, this.oFormatYyyymmdd.format(oDate)));
 
 			this.busyDialog.open();
 			var mParameters = {
+				filters: aFilter,
 				success: function (oData, oResponse) {
 					that.busyDialog.close();
 					oData.results.unshift({
@@ -98,10 +127,10 @@ sap.ui.define([
 				//filters: aFilter,
 				success: function (oData, oResponse) {
 					that.busyDialog.close();
-					oData.results.unshift({
+					/*oData.results.unshift({
 						TIME_CAT: "0000",
 						DESCRIPTION: "SELECT"
-					});
+					});*/
 					oModel.setSizeLimit(oData.results.length + 50);
 					oModel.setData(oData.results);
 					that.getView().setModel(oModel, "AvlTimeCategories");
@@ -120,14 +149,19 @@ sap.ui.define([
 			var isValid = true;
 			var oRowData = this.getModel("aTableRowsdays").getData();
 			var oRows = this.getModel("aTableRows").getData();
+			var existingTabData = this.getModel("aTableExistingEntries").getData();
 			var data = this.getModel('TimeData').getData();
-			if (selCountry === "00000000") {
-				sap.m.MessageToast.show("Select Location for the WBS");
+			// making value state none on selecting location
+			if(oEvent.getSource().getSelectedKey() !== "00000000"){
+				oEvent.getSource().setValueState("None")
+			}
+			if (this.isMandatory && selCountry === "00000000") {
+				sap.m.MessageToast.show();
 				isValid = false;
 			} else {
-				for (var j = 0; j < oRows.length - 1; j++) {
-					if (j !== this.iIndex && oRows[j].timecat === selTC && oRows[j].wrkloc === selCountry) {
-						sap.m.MessageToast.show("Multiple Entries on Same WBS, Location and Time Category are not allowed");
+				for (var j = 0; j < existingTabData.length; j++) {
+					if (existingTabData[j].timecategory === selTC && existingTabData[j].wrklocation === selCountry) {
+						sap.m.MessageToast.show(that.getResourceBundle().getText("multiLOCTCMsg"));
 						isValid = false;
 					}
 				}
@@ -156,12 +190,14 @@ sap.ui.define([
 							record.TimeEntryOperation = 'U';
 							this.oControl.setProperty("/overviewDataChanged", true);
 							this.oControl.setProperty("/sendForApproval", true);
+							this.oControl.setProperty("/isOverviewChanged", true);
 							this.getModel("TimeData").refresh();
 							this.isCountrySelected = true;
 						}
-						/*else {
-							record.TimeEntryOperation = 'C';
-						}*/
+						// making location to pass to payload in case user changing it while creation
+						else if(record.Counter === "" && record.TimeEntryDataFields.WrkLoc !== selCountry && record.TimeEntryOperation === 'C'){
+							record.TimeEntryDataFields.WrkLoc = selCountry;
+						}
 					}
 
 				}
@@ -179,10 +215,15 @@ sap.ui.define([
 			var oRowData = this.getModel("aTableRowsdays").getData();
 			var oRows = this.getModel("aTableRows").getData();
 			var data = this.getModel('TimeData').getData();
+			var existingTabData = this.getModel("aTableExistingEntries").getData();
+			// making value state none on selecting time cat
+			if(selTC){
+				oEvent.getSource().setValueState("None");
+			}
 
-			for (var j = 0; j < oRows.length - 1; j++) {
-				if (j !== this.iIndex && oRows[j].timecat === selTC && oRows[j].wrkloc === selCountry) {
-					sap.m.MessageToast.show("Multiple Entries on Same WBS, Location and Time Category are not allowed");
+			for (var j = 0; j < existingTabData.length; j++) {
+				if (existingTabData[j].timecategory === selTC && existingTabData[j].wrklocation === selCountry) {
+					sap.m.MessageToast.show(that.getResourceBundle().getText("multiLOCTCMsg"));
 					isValid = false;
 				}
 			}
@@ -210,12 +251,14 @@ sap.ui.define([
 							record.TimeEntryOperation = 'U';
 							this.oControl.setProperty("/overviewDataChanged", true);
 							this.oControl.setProperty("/sendForApproval", true);
+							this.oControl.setProperty("/isOverviewChanged", true);
 							this.getModel("TimeData").refresh();
 							this.isTimeCategorySelect = true;
 						}
-						/*else {
-							record.TimeEntryOperation = 'C';
-						}*/
+						// making location to pass to payload in case user changing it while creation
+						else if(record.Counter === "" && record.TimeEntryDataFields.ProjTimeCat !== selTC && record.TimeEntryOperation === 'C'){
+							record.TimeEntryDataFields.ProjTimeCat = selTC;
+						}
 					}
 
 				}
@@ -227,7 +270,11 @@ sap.ui.define([
 		},
 		bindList: function (iIndex) {
 			var that = this;
-			this.oPage.removeContent(1);
+			//var currWBS = this.getModel("aTableRows").getData()[this.iIndex].posid;
+			this.oPage.removeContent(2);
+			// Added this line to display message strip for TECO entries as part of CTS-57
+			// this.oPage.removeContent(2);
+			// Added this line to display message strip for TECO entries as part of CTS-57
 			var oTemplate = new sap.m.CustomListItem({
 				type: "Navigation",
 				content: [
@@ -235,15 +282,16 @@ sap.ui.define([
 						items: [
 							new sap.m.Button({
 								enabled: {
-									path: 'aTableRowsdays>STATUS',
-									formatter: formatter.buttonEnabled
+									//path: 'aTableRowsdays>STATUS',
+									parts: [{ path: 'aTableRowsdays>STATUS' }, { path: 'aTableRowsdays>/0/posid' }],
+									formatter: formatter.isNavEnabled
 								},
 								type: "Emphasized",
 								icon: "sap-icon://touch",
 								press: function (oEvent) {
 									that.addTimeFromButton(oEvent);
 								}
-							}).addStyleClass("sapUiSmallMarginBegin sapUiSmallMarginTopBottom"),
+							}).addStyleClass("sapUiSmallMarginBegin sapUiSmallMarginTopBottom width20"),
 							new sap.m.VBox({
 								items: [
 									new sap.m.Text({
@@ -259,7 +307,7 @@ sap.ui.define([
 										}
 									})
 								]
-							}).addStyleClass("sapUiSmallMarginBegin sapUiSmallMarginTopBottom"),
+							}).addStyleClass("sapUiSmallMarginBegin sapUiSmallMarginTopBottom width40"),
 							new sap.m.ObjectStatus({
 								text: {
 									path: 'aTableRowsdays>STATUS',
@@ -269,7 +317,7 @@ sap.ui.define([
 									path: 'aTableRowsdays>STATUS',
 									formatter: formatter.state
 								}
-							}).addStyleClass("sapUiLargeMarginBegin sapUiSmallMarginTopBottom")
+							}).addStyleClass("sapUiLargeMarginBegin sapUiSmallMarginTopBottom width40 minWidth100 doneTextColor")
 						]
 					})
 
@@ -294,23 +342,71 @@ sap.ui.define([
 				template: oTemplate,
 				templateShareable: false
 			});
+			// Added this line to display message strip for TECO entries as part of CTS-57
+			// var msgStrip = new sap.m.MessageStrip({
+			// 	text: "Charge code status is TECO or CLSD, no time entry available",
+			// 	type: "Information",
+			// 	showIcon: true,
+			// 	showCloseButton: true,
+			// 	visible: {
+			// 		path: 'aTableRowsdays>/0/posid',
+			// 		formatter: formatter.isMsgStripVisible
+			// 	}
+			// }).addStyleClass("sapUiMediumMarginBottom");
+			//this.oPage.addContent(msgStrip);
+			// Added this line to display message strip for TECO entries as part of CTS-57
 			this.oPage.addContent(oList);
 		},
 		onMainTimeEntriesItemDetailPress: function (oEvent) {
+			//var rowIndex = parseInt(oEvent.getParameters("listItem").listItem.getBindingContextPath().split("/")[3]);
+			var that = this;
 			var tabObj = this.getView().byId("wbsDetails");
-			//tabObj.getItems()[0].getCells()[2].getSelectedKey();
 			var selCountry = tabObj.getItems()[0].getCells()[2].getSelectedKey();
-			var selCategory = tabObj.getItems()[0].getCells()[3].getSelectedKey();
-			if (selCountry !== "00000000") {
-				var sPath = oEvent.getParameters("listItem").listItem.getBindingContextPath(); // '/0/rowsdata/0'
-				var iIndex = oEvent.getParameters("listItem").listItem.getBindingContextPath().split("/")[1];
-				var sIndex = oEvent.getParameters("listItem").listItem.getBindingContextPath().split("/")[3];
-				this.Router.navTo("detaildetail", {
-					index: iIndex,
-					sindex: sIndex
-				});
-			} else {
-				sap.m.MessageToast.show("Select Location for the WBS");
+			var selTC = tabObj.getItems()[0].getCells()[3].getSelectedKey();
+
+
+			//var currWBS = "";
+			//if (tabObj.getItems()[0].getCells()[0].getTitle() !== "" && tabObj.getItems()[0].getCells()[0].getTitle().indexOf("(") > -1) {
+			//var currWBS = tabObj.getItems()[0].getCells()[0].getTitle().split("(")[1].split(")")[0];
+			var currWBS = this.getModel("aTableRows").getData()[this.iIndex].posid;
+			var aWorkListData = this.getModel("Worklist").getData();
+			var aRow = aWorkListData.find(function (entry, id) {
+				return entry.WorkListDataFields.POSID === currWBS;
+			});
+			//}
+			if (aRow) {
+				var isValid = true;
+				var existingTabData = this.getModel("aTableExistingEntries").getData();
+				if (this.isMandatory && selCountry === "00000000") {
+					sap.m.MessageToast.show(that.getResourceBundle().getText("msgLocWBS"));
+					isValid = false;
+				} else {
+					for (var j = 0; j < existingTabData.length; j++) {
+						if (this.iFrom === "TimeEntries") {
+							if ((j !== this.iIndex && existingTabData[j].posid === currWBS) && existingTabData[j].timecategory === selTC && existingTabData[j].wrklocation ===
+								selCountry) {
+								sap.m.MessageToast.show(that.getResourceBundle().getText("multiLOCTCMsg"));
+								isValid = false;
+							}
+						} else {
+							if (existingTabData[j].posid === currWBS && existingTabData[j].timecategory === selTC && existingTabData[j].wrklocation ===
+								selCountry) {
+								sap.m.MessageToast.show(that.getResourceBundle().getText("multiLOCTCMsg"));
+								isValid = false;
+							}
+						}
+					}
+				}
+
+				if (isValid) {
+					var sPath = oEvent.getParameters("listItem").listItem.getBindingContextPath(); // '/0/rowsdata/0'
+					var iIndex = oEvent.getParameters("listItem").listItem.getBindingContextPath().split("/")[1];
+					var sIndex = oEvent.getParameters("listItem").listItem.getBindingContextPath().split("/")[3];
+					this.Router.navTo("detaildetail", {
+						index: iIndex,
+						sindex: sIndex
+					});
+				}
 			}
 		},
 		addTimeFromButton: function (oEvent) {
@@ -328,7 +424,7 @@ sap.ui.define([
 			}, {
 				"key": "8",
 				"text": "8 Hours"
-			}, ];
+			},];
 			var oModel = new sap.ui.model.json.JSONModel();
 			oModel.setData(odata);
 			var oButton = oEvent.getSource(),
@@ -352,33 +448,62 @@ sap.ui.define([
 		},
 		onHoursItemPress: function (oEvent) {
 			var that = this;
-			oEvent.getSource().getParent().close();
-			if (oEvent.getParameters("item").item) {
-				var data = this.getModel('TimeData').getData();
-				var sKey = parseFloat(oEvent.getParameters("item").item.getKey()).toFixed(2);
-				var sPosid = this.getModel("aTableRowsdays").getObject(this.butPressedItemPosid).posid;
-				var oDate = this.getModel("aTableRowsdays").getObject(this.butPressedPath).WORKDATE;
-				this.getModel("aTableRowsdays").getObject(this.butPressedPath).CATSHOURS = sKey;
-				this.getModel("aTableRowsdays").refresh();
-				var oWorkListModel = this.getModel("Worklist");
-				var aWorkListData = oWorkListModel.getData();
-				var aRow = aWorkListData.find(function (entry, id) {
-					return entry.WorkListDataFields.POSID === sPosid;
-				});
-				var record = data.find(function (entry, id) {
-					return that.oFormatyyyymmdd.format(entry.TimeEntryDataFields.WORKDATE) === that.oFormatyyyymmdd.format(oDate);
-				});
-				record.TimeEntryDataFields.CATSHOURS = sKey;
-				if (record.Counter) {
-					record.TimeEntryOperation = 'U';
-				} else {
-					record.TimeEntryOperation = 'C';
+			var tabObj = this.getView().byId("wbsDetails");
+			var selCountry = tabObj.getItems()[0].getCells()[2].getSelectedKey();
+			var selTC = tabObj.getItems()[0].getCells()[3].getSelectedKey();
+			var isValid = true;
+			var existingTabData = this.getModel("aTableExistingEntries").getData();
+			if (this.isMandatory && selCountry === "00000000") {
+				sap.m.MessageToast.show(that.getResourceBundle().getText("msgLocWBS"));
+				isValid = false;
+			} else {
+				for (var j = 0; j < existingTabData.length; j++) {
+					if (this.iFrom === "TimeEntries") {
+						if (j !== this.iIndex && existingTabData[j].timecategory === selTC && existingTabData[j].wrklocation ===
+							selCountry) {
+							sap.m.MessageToast.show(that.getResourceBundle().getText("multiLOCTCMsg"));
+							isValid = false;
+						}
+					} else {
+						if (existingTabData[j].timecategory === selTC && existingTabData[j].wrklocation ===
+							selCountry) {
+							sap.m.MessageToast.show(that.getResourceBundle().getText("multiLOCTCMsg"));
+							isValid = false;
+						}
+					}
 				}
-				this.oControl.setProperty("/overviewCancel", true);
-				this.oControl.setProperty("/overviewDataChanged", true);
-				this.oControl.setProperty("/isOverviewChanged", true);
-				this.oControl.setProperty("/sendForApproval", true);
-				this.getModel("TimeData").refresh();
+			}
+			if (isValid) {
+				oEvent.getSource().getParent().close();
+				if (oEvent.getParameters("item").item) {
+					var data = this.getModel('TimeData').getData();
+					var sKey = parseFloat(oEvent.getParameters("item").item.getKey()).toFixed(2);
+					var sPosid = this.getModel("aTableRowsdays").getObject(this.butPressedItemPosid).posid;
+					var oDate = this.getModel("aTableRowsdays").getObject(this.butPressedPath).WORKDATE;
+					this.getModel("aTableRowsdays").getObject(this.butPressedPath).CATSHOURS = sKey;
+					this.getModel("aTableRowsdays").refresh();
+					var oWorkListModel = this.getModel("Worklist");
+					var aWorkListData = oWorkListModel.getData();
+					var aRow = aWorkListData.find(function (entry, id) {
+						return entry.WorkListDataFields.POSID === sPosid;
+					});
+					var record = data.find(function (entry, id) {
+						return that.oFormatyyyymmdd.format(entry.TimeEntryDataFields.WORKDATE) === that.oFormatyyyymmdd.format(oDate);
+					});
+					record.TimeEntryDataFields.CATSHOURS = sKey;
+					record.TimeEntryDataFields.WrkLoc = selCountry;
+					record.TimeEntryDataFields.ProjTimeCat = selTC;
+					if (record.Counter) {
+						record.TimeEntryOperation = 'U';
+					} else {
+						record.TimeEntryOperation = 'C';
+					}
+					this.oControl.setProperty("/overviewCancel", true);
+					this.oControl.setProperty("/overviewDataChanged", true);
+					this.oControl.setProperty("/isOverviewChanged", true);
+					this.oControl.setProperty("/sendForApproval", true);
+					this.getModel("TimeData").refresh();
+				}
 			}
 		},
 		onNavBacktoDetail: function () {
@@ -393,7 +518,7 @@ sap.ui.define([
 					title: error, // default
 					styleClass: sResponsivePaddingClasses, // default
 					actions: [sap.m.MessageBox.Action.OK,
-						sap.m.MessageBox.Action.CANCEL
+					sap.m.MessageBox.Action.CANCEL
 					], // default
 					emphasizedAction: sap.m.MessageBox.Action.OK, // default
 					onClose: function (oAction) {
@@ -407,19 +532,80 @@ sap.ui.define([
 			}
 		},
 		onSendApproval: function (oEvent) {
-			this.busyDialog.open();
-			this.finalSubmit();
+			var countryTCSelected = this.isTCLocSelected();
+			if (countryTCSelected) {
+				this.busyDialog.open();
+				var entries = this.getModel('TimeData').getData();
+				for (var j = 0; j < entries.length; j++) {
+					entries[j].SetDraft = false;
+				}
+				for (var j = 0; j < entries.length; j++) {
+					if (entries[j].Counter && (entries[j].Status === "10" || entries[j].Status === "20" || entries[j].Status === "40" || entries[j].Status ===
+						"30") &&
+						!entries[j].TimeEntryOperation) {
+						entries[j].TimeEntryOperation = "U";
+					}
+				}
+				this.finalSubmit();
+			}
+		},
+		isTCLocSelected: function () {
+			var that = this;
+			var tabObj = this.getView().byId("wbsDetails");
+			var selCountry = tabObj.getItems()[0].getCells()[2].getSelectedKey();
+			var selTC = tabObj.getItems()[0].getCells()[3].getSelectedKey();
+			var isValid = true;
+			//			Location/Timecategory hide/disable/mandatory			
+			let bCountryMandatory = this.getModel("controls").getProperty("/columnLocationMandatory");
+			let bCategoryMandatory = this.getModel("controls").getProperty("/columnTimeCategoryMandatory");
+			tabObj.getItems()[0].getCells()[2].setValueState(sap.ui.core.ValueState.None);
+			tabObj.getItems()[0].getCells()[3].setValueState(sap.ui.core.ValueState.None);
+			// if (this.isMandatory && selCountry === "00000000") {
+			// 	sap.m.MessageToast.show(that.getResourceBundle().getText("msgLocWBS"));
+			// 	isValid = false;
+			// }
+
+			if ((selCountry === "" || selCountry === "00000000") && selTC === "" && bCountryMandatory && bCategoryMandatory) {
+				sap.m.MessageToast.show(that.getResourceBundle().getText("msgLocTCWBS"));
+				isValid = false;
+				tabObj.getItems()[0].getCells()[2].setValueState(sap.ui.core.ValueState.Error);
+				tabObj.getItems()[0].getCells()[3].setValueState(sap.ui.core.ValueState.Error);
+			} else if ((selCountry === "" || selCountry === "00000000") && selTC !== "" && bCountryMandatory) {
+				sap.m.MessageToast.show(that.getResourceBundle().getText("msgValidLocWBS"));
+				isValid = false;
+				tabObj.getItems()[0].getCells()[2].setValueState(sap.ui.core.ValueState.Error);
+			} else if ((selCountry !== "" || selCountry !== "00000000") && selTC === "" && bCategoryMandatory) {
+				sap.m.MessageToast.show(that.getResourceBundle().getText("msgValidTCWBS"));
+				isValid = false;
+				tabObj.getItems()[0].getCells()[3].setValueState(sap.ui.core.ValueState.Error);
+			} else {
+				isValid = true;
+			}
+
+			return isValid;
 		},
 		onSaveConfirm: function (oEvent) {
 			this.busyDialog.open();
 			var that = this;
 			var toastMsg;
 			if (this.oControl.getProperty("/isOverviewChanged") === true) {
-				var entries = this.getModel('TimeData').getData();
-				for (var i = 0; i < entries.length; i++) {
-					entries[i].SetDraft = true;
+				var countryTCSelected = this.isTCLocSelected();
+				if (countryTCSelected) {
+					var entries = this.getModel('TimeData').getData();
+					for (var i = 0; i < entries.length; i++) {
+						entries[i].SetDraft = true;
+					}
+					for (var j = 0; j < entries.length; j++) {
+						if (entries[j].Counter && (entries[j].Status === "10" || entries[j].Status === "20" || entries[j].Status === "40" || entries[j].Status ===
+							"30") &&
+							!entries[j].TimeEntryOperation) {
+							entries[j].TimeEntryOperation = "U";
+						}
+					}
+					this.finalSubmit();
+				} else {
+					this.busyDialog.close();
 				}
-				this.finalSubmit();
 			} else {
 				toastMsg = that.getResourceBundle().getText("noDataChanged");
 				sap.m.MessageToast.show(toastMsg, {

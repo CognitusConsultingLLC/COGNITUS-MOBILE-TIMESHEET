@@ -1,10 +1,10 @@
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" class="sapUiSizeCompact">
-	<Dialog title="Work Locations" class="sapUiContentPadding" contentWidth="60rem" horizontalScrolling="false">
+	<Dialog title="{i18n>workLocations}" class="sapUiContentPadding" contentWidth="60rem" horizontalScrolling="false">
 		<List items="{path: 'WorkLocations>/'}" mode="SingleSelectMaster" selectionChange="onWLValueHelpSelectedItem">
 			<ObjectListItem title="{WorkLocations>SHORT}" number="{WorkLocations>STEXT}"></ObjectListItem>
 		</List>
 		<buttons>
-			<Button id="idTCVHClose" text="Close" press="onWLValueHelpDialogClose"></Button>
+			<Button id="idTCVHClose" text="{i18n>close}" press="onWLValueHelpDialogClose"></Button>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>
