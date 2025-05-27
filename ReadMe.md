@@ -6,7 +6,7 @@ Make sure you have:
 o	Cloud Foundry enabled
 o	HTML5 Application Repository
 o	BAS Service subscription
-o	SAP Launchpad Service or SAP Build Work Zone, Standard Edition(In case of Desktop)
+o	SAP Launchpad Service or SAP Build Work Zone, Standard Edition
 3. Login to SAP BTP and Select the Sub Account. Goto ‘Instances and Subscriptions’ option in left pane and select ‘SAP Business Application Studio’ in subscriptions. 
 4. Create a Dev Space if required and run it. You will be redirected to BAS. BAS is loaded with Get Started screen in that select ‘Clone from Git’ option to clone the repo from the provided git URL
 5. Create a destination named 'SAP-S4-PP' using principle propagation.
