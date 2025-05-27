@@ -1,7 +1,7 @@
 PART 1: Deploy Fiori App to SAP BTP (HTML5 Application)
 1. Prerequisites
 Make sure you have:
-•	Fiori app (GIT URL : https://github.com/CognitusConsultingLLC/AMAZON-MOBILE-TIMESHEET.git)
+•	Fiori app (GIT URL : https://github.com/CognitusConsultingLLC/COGNITUS-MOBILE-TIMESHEET.git)
 •	SAP BTP Subaccount with following service enabled:
 o	Cloud Foundry enabled
 o	HTML5 Application Repository
